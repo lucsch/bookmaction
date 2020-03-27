@@ -8,6 +8,7 @@
 
 import wx
 import bitmaps
+import version  # this file is generated with git-version
 
 
 ##########################################################
@@ -25,6 +26,7 @@ class BAFrame(wx.Frame):
 
         self.__CreateControls()
         self.__CreateMenus()
+        self.__CreateStatusAndVersion()
 
         self.Layout()
         self.Centre(wx.BOTH)
@@ -66,6 +68,10 @@ class BAFrame(wx.Frame):
 
         # connect Menu events
         self.Bind(wx.EVT_MENU, self.OnQuit, id=wx.ID_EXIT)
+
+    def __CreateStatusAndVersion(self):
+        self.CreateStatusBar(2)
+        self.SetStatusText("version: " + str(version.GIT_COMMITS_SINCE_TAG) + " (" + version.GIT_COMMIT_ID + ")", 1)
 
     def __del__(self):
         pass

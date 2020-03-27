@@ -20,12 +20,17 @@
 4. Install the required libraries see the requirements.txt file for more
  details but Bookmaction mostly uses the following libraries :
 
-  - *wxPython*: for the user interface
-  - *PyInstaller*: for  creating *.exe and *.app
-  - *pytest*: for unit testing
+      - *wxPython*: for the user interface
+      - *PyInstaller*: for  creating *.exe and *.app
+      - *pytest*: for unit testing
+      - *git-version*: for getting the project version
+    
+        > the libraries could be installed using the following command:
+    
+                pip install -r requirements.txt
+            
+5. Create the version information using the following command
 
-    > the libraries could be installed using the following command:
-
-            pip install -r requirements.txt
+        python -m gitversionbuilder --dir . --lang python version.py
 
 
