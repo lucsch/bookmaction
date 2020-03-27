@@ -7,6 +7,7 @@
 ##########################################################
 
 import wx
+import wx.adv
 import bitmaps
 import version  # this file is generated with git-version
 
@@ -28,6 +29,11 @@ class BAFrame(wx.Frame):
         self.__CreateMenus()
         self.__CreateStatusAndVersion()
 
+        # computing minimum size
+        # mysizepanel = bSizer5.ComputeFittingWindowSize(self)
+        # self.SetMinSize([mysizebutton[0] + mysizepanel[0], mysizebutton[1]])
+        self.SetSize([900, 600])
+
         self.Layout()
         self.Centre(wx.BOTH)
 
@@ -47,37 +53,82 @@ class BAFrame(wx.Frame):
         # menubar
         self.m_menubar = wx.MenuBar(0)
         self.m_menu1 = wx.Menu()
-        self.m_menu_paste = wx.MenuItem(
-            self.m_menu1, wx.ID_PASTE, u"Paste" + u"\t" + u"Ctrl+V",
-            wx.EmptyString, wx.ITEM_NORMAL)
-        self.m_menu1.Append(self.m_menu_paste)
+        self.m_menuNew = wx.MenuItem(self.m_menu1, wx.ID_NEW, u"New" + u"\t" + u"Ctrl+N", wx.EmptyString,
+                                     wx.ITEM_NORMAL)
+        self.m_menu1.Append(self.m_menuNew)
 
-        self.m_menu_exit = wx.MenuItem(
-            self.m_menu1, wx.ID_EXIT, u"Exit" + u"\t" + u"Alt+F4",
-            wx.EmptyString, wx.ITEM_NORMAL)
-        self.m_menu1.Append(self.m_menu_exit)
+        self.m_menuOpen = wx.MenuItem(self.m_menu1, wx.ID_ANY, u"Open" + u"\t" + u"Ctrl+O", wx.EmptyString,
+                                      wx.ITEM_NORMAL)
+        self.m_menu1.Append(self.m_menuOpen)
+
+        self.m_menuSave = wx.MenuItem(self.m_menu1, wx.ID_SAVE, u"Save" + u"\t" + u"Ctrl+S", wx.EmptyString,
+                                      wx.ITEM_NORMAL)
+        self.m_menu1.Append(self.m_menuSave)
+
+        self.m_menuSaveAs = wx.MenuItem(self.m_menu1, wx.ID_ANY, u"Save as...", wx.EmptyString, wx.ITEM_NORMAL)
+        self.m_menu1.Append(self.m_menuSaveAs)
+
+        self.m_menu1.AppendSeparator()
+
+        self.m_menuExit = wx.MenuItem(self.m_menu1, wx.ID_EXIT, u"Quit" + u"\t" + u"Alt+F4", wx.EmptyString,
+                                      wx.ITEM_NORMAL)
+        self.m_menu1.Append(self.m_menuExit)
 
         self.m_menubar.Append(self.m_menu1, u"File")
-        self.SetMenuBar(self.m_menubar)
 
-        # computing minimum size
-        # mysizebutton = bSizer14.ComputeFittingWindowSize(self)
-        # mysizepanel = bSizer5.ComputeFittingWindowSize(self)
-        # self.SetMinSize([mysizebutton[0] + mysizepanel[0], mysizebutton[1]])
-        # self.SetSize([900, mysizebutton[1]])
+        self.m_menu2 = wx.Menu()
+        self.m_menuBookAdd = wx.MenuItem(self.m_menu2, wx.ID_ANY, u"Add..." + u"\t" + u"Ctrl+D", wx.EmptyString,
+                                         wx.ITEM_NORMAL)
+        self.m_menu2.Append(self.m_menuBookAdd)
+
+        self.m_menuBookRemove = wx.MenuItem(self.m_menu2, wx.ID_ANY, u"Remove" + u"\t" + u"Del", wx.EmptyString,
+                                            wx.ITEM_NORMAL)
+        self.m_menu2.Append(self.m_menuBookRemove)
+
+        self.m_menuBookEdit = wx.MenuItem(self.m_menu2, wx.ID_ANY, u"Edit...", wx.EmptyString, wx.ITEM_NORMAL)
+        self.m_menu2.Append(self.m_menuBookEdit)
+
+        self.m_menubar.Append(self.m_menu2, u"Bookmarks")
+
+        self.m_menu3 = wx.Menu()
+        self.m_menuAbout = wx.MenuItem(self.m_menu3, wx.ID_ABOUT, u"About", wx.EmptyString, wx.ITEM_NORMAL)
+        self.m_menu3.Append(self.m_menuAbout)
+
+        self.m_menuWebsite = wx.MenuItem(self.m_menu3, wx.ID_ANY, u"website...", wx.EmptyString, wx.ITEM_NORMAL)
+        self.m_menu3.Append(self.m_menuWebsite)
+
+        self.m_menubar.Append(self.m_menu3, u"About")
+
+        self.SetMenuBar(self.m_menubar)
 
         # connect Menu events
         self.Bind(wx.EVT_MENU, self.OnQuit, id=wx.ID_EXIT)
+        self.Bind(wx.EVT_MENU, self.OnAbout, id=wx.ID_ABOUT)
 
     def __CreateStatusAndVersion(self):
         self.CreateStatusBar(2)
-        self.SetStatusText("version: " + str(version.GIT_COMMITS_SINCE_TAG) + " (" + version.GIT_COMMIT_ID + ")", 1)
+        self.SetStatusText(self.__GetGitVersion(), 1)
+
+    def __GetGitVersion(self):
+        return "version: " + str(version.GIT_COMMITS_SINCE_TAG) + " (" + version.GIT_COMMIT_ID + ")"
 
     def __del__(self):
         pass
 
     def OnQuit(self, event):
         self.Close()
+
+    def OnWebSite(self, event):
+        wx.LaunchDefaultBrowser("https://github.com/lucsch/bookmaction")
+
+    def OnAbout(self, event):
+        info = wx.adv.AboutDialogInfo()
+        info.Name = self.Title
+        info.Version = self.__GetGitVersion()
+        info.Icon = self.GetIcon()
+        info.Developers = ["Lucien SCHREIBER"]
+        info.Description = """Bookmarks manager with actions"""
+        wx.adv.AboutBox(info)
 
 
 ##########################################################
