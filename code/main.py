@@ -7,13 +7,15 @@
 ##########################################################
 
 import wx
+import bitmaps
+
 
 ##########################################################
 # MAIN FRAME CLASS
 ##########################################################
 
 
-class BAFrame (wx.Frame):
+class BAFrame(wx.Frame):
     def __init__(self):
         wx.Frame.__init__(
             self, None, id=wx.ID_ANY,
@@ -21,22 +23,25 @@ class BAFrame (wx.Frame):
             size=wx.DefaultSize,
             style=wx.DEFAULT_FRAME_STYLE | wx.TAB_TRAVERSAL)
 
-        #icon = wx.Icon()
-        #icon.CopyFromBitmap(bitmaps.pro.GetBitmap())
-        #self.SetIcon(icon)
+        self.__CreateControls()
+        self.__CreateMenus()
 
-
-        bSizer1 = wx.BoxSizer( wx.VERTICAL )
-
-        self.m_listCtrl = wx.ListCtrl( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.LC_REPORT )
-        bSizer1.Add( self.m_listCtrl, 1, wx.ALL|wx.EXPAND, 0 )
-
-
-        self.SetSizer( bSizer1 )
         self.Layout()
+        self.Centre(wx.BOTH)
 
-        self.Centre( wx.BOTH )
+    def __CreateControls(self):
+        icon = wx.Icon()
+        icon.CopyFromBitmap(bitmaps.bookmaction.GetBitmap())
+        self.SetIcon(icon)
 
+        bSizer1 = wx.BoxSizer(wx.VERTICAL)
+
+        self.m_listCtrl = wx.ListCtrl(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.LC_REPORT)
+        bSizer1.Add(self.m_listCtrl, 1, wx.ALL | wx.EXPAND, 0)
+
+        self.SetSizer(bSizer1)
+
+    def __CreateMenus(self):
         # menubar
         self.m_menubar = wx.MenuBar(0)
         self.m_menu1 = wx.Menu()
@@ -54,22 +59,16 @@ class BAFrame (wx.Frame):
         self.SetMenuBar(self.m_menubar)
 
         # computing minimum size
-        #mysizebutton = bSizer14.ComputeFittingWindowSize(self)
-        #mysizepanel = bSizer5.ComputeFittingWindowSize(self)
-        #self.SetMinSize([mysizebutton[0] + mysizepanel[0], mysizebutton[1]])
-        #self.SetSize([900, mysizebutton[1]])
-
-
-
+        # mysizebutton = bSizer14.ComputeFittingWindowSize(self)
+        # mysizepanel = bSizer5.ComputeFittingWindowSize(self)
+        # self.SetMinSize([mysizebutton[0] + mysizepanel[0], mysizebutton[1]])
+        # self.SetSize([900, mysizebutton[1]])
 
         # connect Menu events
         self.Bind(wx.EVT_MENU, self.OnQuit, id=wx.ID_EXIT)
 
-
     def __del__(self):
         pass
-
-  
 
     def OnQuit(self, event):
         self.Close()
@@ -85,6 +84,7 @@ class BAApp(wx.App):
     Main application class
     initialize the BAFrame class and the main loop
     """
+
     def OnInit(self):
         dlg = BAFrame()
         dlg.Show(True)
