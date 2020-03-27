@@ -11,6 +11,7 @@ import wx.adv
 import bitmaps
 import version  # this file is generated with git-version
 from bookmarklistctrl import *
+from settingsdlg import *
 
 
 ##########################################################
@@ -71,6 +72,11 @@ class BAFrame(wx.Frame):
 
         self.m_menu1.AppendSeparator()
 
+        self.m_menuSettings = wx.MenuItem(self.m_menu1, wx.ID_ANY, u"Settings...", wx.EmptyString, wx.ITEM_NORMAL)
+        self.m_menu1.Append(self.m_menuSettings)
+
+        self.m_menu1.AppendSeparator()
+
         self.m_menuExit = wx.MenuItem(self.m_menu1, wx.ID_EXIT, u"Quit" + u"\t" + u"Alt+F4", wx.EmptyString,
                                       wx.ITEM_NORMAL)
         self.m_menu1.Append(self.m_menuExit)
@@ -104,6 +110,9 @@ class BAFrame(wx.Frame):
 
         # connect Menu events
         self.Bind(wx.EVT_MENU, self.OnWebSite, id=self.m_menuWebsite.GetId())
+        self.Bind(wx.EVT_MENU, self.OnAddBookMarkMenu, id=self.m_menuBookAdd.GetId())
+        self.Bind(wx.EVT_MENU, self.OnSettingsMenu, id=self.m_menuSettings.GetId())
+
 
         self.Bind(wx.EVT_MENU, self.OnQuit, id=wx.ID_EXIT)
         self.Bind(wx.EVT_MENU, self.OnAbout, id=wx.ID_ABOUT)
@@ -132,6 +141,13 @@ class BAFrame(wx.Frame):
         info.Developers = ["Lucien SCHREIBER"]
         info.Description = """Bookmarks manager with actions"""
         wx.adv.AboutBox(info)
+
+    def OnAddBookMarkMenu(self, event):
+        self.m_listCtrl.AddBookMark()
+
+    def OnSettingsMenu(self, event):
+        mydlg = SettingsDlg(self)
+        mydlg.ShowModal()
 
 
 ##########################################################

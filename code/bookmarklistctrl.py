@@ -1,8 +1,10 @@
 import wx
+from bookmarksdlg import *
 
 
 class BookMarkListCtrl(wx.ListCtrl):
     """a wx.listctrl component for pasting and manipulating bookmarks"""
+
     def __init__(self, parent):
         wx.ListCtrl.__init__(
             self, parent,
@@ -33,6 +35,11 @@ class BookMarkListCtrl(wx.ListCtrl):
 
     def SetColumnText(self, index, column, text):
         self.SetStringItem(index, column, str(text))
+
+    def AddBookMark(self):
+        dlg = BookMarkDlg(self)
+        dlg.ShowModal()
+
 
     # def SetFiles(self, filenames, clearlist):
     #     if clearlist is True:
@@ -83,4 +90,3 @@ class BookMarkListCtrl(wx.ListCtrl):
                 if self.GetItemCount() == 0:
                     self.Append(["", self.defaultColumnText])
         event.Skip()
-
