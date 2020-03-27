@@ -10,6 +10,7 @@ import wx
 import wx.adv
 import bitmaps
 import version  # this file is generated with git-version
+from bookmarklistctrl import *
 
 
 ##########################################################
@@ -44,7 +45,7 @@ class BAFrame(wx.Frame):
 
         bSizer1 = wx.BoxSizer(wx.VERTICAL)
 
-        self.m_listCtrl = wx.ListCtrl(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.LC_REPORT)
+        self.m_listCtrl = BookMarkListCtrl(self)
         bSizer1.Add(self.m_listCtrl, 1, wx.ALL | wx.EXPAND, 0)
 
         self.SetSizer(bSizer1)
@@ -102,6 +103,8 @@ class BAFrame(wx.Frame):
         self.SetMenuBar(self.m_menubar)
 
         # connect Menu events
+        self.Bind(wx.EVT_MENU, self.OnWebSite, id=self.m_menuWebsite.GetId())
+
         self.Bind(wx.EVT_MENU, self.OnQuit, id=wx.ID_EXIT)
         self.Bind(wx.EVT_MENU, self.OnAbout, id=wx.ID_ABOUT)
 
