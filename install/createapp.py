@@ -78,7 +78,7 @@ class CreateApp(object):
         #            print("          Tree('..{}font', prefix='font'),".format(os.path.sep))
 
         if self.plateform == ACTIVE_PLATEFORM[2]:  # OSX
-            for line in fileinput.input(os.path.join(self.binpath, "main.spec"), inplace=1):
+            for line in fileinput.input(os.path.join(self.binpath, "bookmaction.spec"), inplace=1):
                 if "bundle_identifier=None)" in line:
                     print("             bundle_identifier=None,")
                     print("             info_plist={")
@@ -101,7 +101,7 @@ class CreateApp(object):
             "--onefile",
             "--windowed",
             "--icon={}".format(self.iconfile),
-            os.path.join(self.basepath, "code", "main.py")]
+            os.path.join(self.basepath, "code", "bookmaction.py")]
         print(command)
         try:
             p = subprocess.Popen(command, cwd=self.binpath)
@@ -114,7 +114,7 @@ class CreateApp(object):
 
         # run pyinstaller with fipro.spec
         try:
-            p = subprocess.Popen(["pyinstaller", "main.spec", "-y"], cwd=self.binpath)
+            p = subprocess.Popen(["pyinstaller", "bookmaction.spec", "-y"], cwd=self.binpath)
             p.wait()
         except:
             print("Error running : pyinstaller bookmaction.spec")
