@@ -14,7 +14,7 @@ class BookMarkListCtrl(wx.ListCtrl):
             style=wx.LC_REPORT | wx.LC_HRULES)
 
         # initing 2 columns
-        self.InsertColumn(0, "Action", format=wx.LIST_FORMAT_CENTER, width=60)
+        self.InsertColumn(0, "Action", format=wx.LIST_FORMAT_CENTER, width=100)
         self.InsertColumn(1, "BookMark", width=400)
         self.InsertColumn(2, "Description", width=200)
 
@@ -38,7 +38,12 @@ class BookMarkListCtrl(wx.ListCtrl):
 
     def AddBookMark(self):
         dlg = BookMarkDlg(self)
-        dlg.ShowModal()
+        if (dlg.ShowModal() != wx.ID_OK):
+            pass
+
+        myInfo = dlg.m_BookMarkData.GetMemberAsList()
+        self.Append(myInfo)
+
 
     # def SetFiles(self, filenames, clearlist):
     #     if clearlist is True:

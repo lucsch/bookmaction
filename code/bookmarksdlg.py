@@ -1,5 +1,7 @@
 import wx
 
+from bookmarks import *
+
 
 class BookMarkDlg(wx.Dialog):
 
@@ -58,11 +60,21 @@ class BookMarkDlg(wx.Dialog):
 
         self.__SetDialogAppearance()
 
+        self.m_BookMarkData = BookMark()
+
         # Connect Events
         self.m_btnClipboard.Bind(wx.EVT_BUTTON, self.OnPasteFromClipboard)
 
     def __del__(self):
         pass
+
+    def TransferDataFromWindow(self):
+        self.m_BookMarkData.m_path = self.m_bookmarkCtrl.GetValue()
+        self.m_BookMarkData.m_description = ""
+        self.m_BookMarkData.m_action = BookMarkAction.OPEN
+        if (self.m_radioBtn2.GetValue() == True):
+            self.m_BookMarkData.m_action = BookMarkAction.COPY_TO_CLIPBOARD
+        return True
 
     def __SetDialogAppearance(self):
         self.m_config = wx.FileConfig("bookmaction")
