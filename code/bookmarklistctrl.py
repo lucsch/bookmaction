@@ -51,6 +51,10 @@ class BookMarkListCtrl(wx.ListCtrl):
             return
 
         itemindex = self.GetFirstSelected()
+        # check and ignore default text
+        if (self.GetItemText(itemindex, col=1) == self.defaultColumnText):
+            return
+
         myData = BookMark()
         myData.SetBookMarkActionFromText(self.GetItemText(itemindex, col=0))
         myData.m_path = self.GetItemText(itemindex, col=1)
