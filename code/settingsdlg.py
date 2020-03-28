@@ -30,6 +30,15 @@ class SettingsDlg(wx.Dialog):
 
         bSizer4.Add(sbSizer3, 1, wx.EXPAND, 5)
 
+        sbSizer5 = wx.StaticBoxSizer(wx.StaticBox(self, wx.ID_ANY, u"Auto load document"), wx.VERTICAL)
+
+        self.m_filePickerCtrl = wx.FilePickerCtrl(sbSizer5.GetStaticBox(), wx.ID_ANY, wx.EmptyString, u"Select a file",
+                                                  u"*.bkma", wx.DefaultPosition, wx.DefaultSize,
+                                                  wx.FLP_DEFAULT_STYLE | wx.FLP_FILE_MUST_EXIST | wx.FLP_OPEN)
+        sbSizer5.Add(self.m_filePickerCtrl, 0, wx.ALL | wx.EXPAND, 5)
+
+        bSizer4.Add(sbSizer5, 0, wx.EXPAND, 5)
+
         m_sdbSizer2 = wx.StdDialogButtonSizer()
         self.m_sdbSizer2OK = wx.Button(self, wx.ID_OK)
         m_sdbSizer2.AddButton(self.m_sdbSizer2OK)
@@ -48,7 +57,9 @@ class SettingsDlg(wx.Dialog):
         # Getting config
         self.m_config = wx.FileConfig("bookmaction")
         myAppearance = self.m_config.ReadInt("Appearance", 0)
+        myLoadFile = self.m_config.Read("AutoLoadFile", "")
         self.m_darkModeCtrl.SetValue(myAppearance)
+        self.m_filePickerCtrl.SetPath(myLoadFile)
         self.__SetDialogAppearance()
 
         # connecting event
@@ -66,6 +77,7 @@ class SettingsDlg(wx.Dialog):
 
     def OnBtnOk(self, event):
         self.m_config.WriteInt("Appearance", self.m_darkModeCtrl.IsChecked())
+        self.m_config.Write("AutoLoadFile", self.m_filePickerCtrl.GetPath())
         self.Close()
 
     def __del__(self):
