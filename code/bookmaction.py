@@ -43,6 +43,11 @@ class BAFrame(wx.Frame):
         self.Layout()
         self.Centre(wx.BOTH)
 
+        # autoload project if needed
+        self.m_config = wx.FileConfig("bookmaction")
+        myfile = self.m_config.Read("AutoLoadFile", "")
+        self.__OpenFile(myfile)
+
     def __CreateControls(self):
         icon = wx.Icon()
         icon.CopyFromBitmap(bitmaps.bookmaction.GetBitmap())
@@ -189,8 +194,11 @@ class BAFrame(wx.Frame):
         self.__OpenFile(mydlg.GetPath())
 
     def __OpenFile(self, filename):
+        if (filename == ""):
+            return
+
         if (os.path.exists(filename) == False):
-            wx.LogError("The file : {} didn't exists", filename)
+            wx.LogError("The file : {} didn't exists".format(filename))
             return
 
         self.m_bookmarkDocument.LoadObject(filename)
@@ -214,7 +222,7 @@ class BAFrame(wx.Frame):
             if (self.__ProjectQuestion("closing") == False):
                 event.Veto()
                 return
-            event.Skip()
+        event.Skip()
 
     def __ProjectQuestion(self, text):
         myprojname = self.m_bookmarkDocument.m_docName

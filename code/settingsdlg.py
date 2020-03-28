@@ -33,7 +33,7 @@ class SettingsDlg(wx.Dialog):
         sbSizer5 = wx.StaticBoxSizer(wx.StaticBox(self, wx.ID_ANY, u"Auto load document"), wx.VERTICAL)
 
         self.m_filePickerCtrl = wx.FilePickerCtrl(sbSizer5.GetStaticBox(), wx.ID_ANY, wx.EmptyString, u"Select a file",
-                                                  u"*.bkma", wx.DefaultPosition, wx.DefaultSize,
+                                                  u"*.bmka", wx.DefaultPosition, wx.DefaultSize,
                                                   wx.FLP_DEFAULT_STYLE | wx.FLP_FILE_MUST_EXIST | wx.FLP_OPEN)
         sbSizer5.Add(self.m_filePickerCtrl, 0, wx.ALL | wx.EXPAND, 5)
 
