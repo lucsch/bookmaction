@@ -25,10 +25,6 @@ class BookMarkListCtrl(wx.ListCtrl):
         # self.Bind(wx.EVT_LIST_DELETE_ITEM, self.OnDeleteListItem)
         self.Bind(wx.EVT_LIST_KEY_DOWN, self.OnDeleteListItem)
 
-    def SetDefaultEmptyListText(self, text=""):
-        if text != "":
-            self.defaultColumnText = text
-
     def ClearList(self):
         self.DeleteAllItems()
         self.Append(["", self.defaultColumnText])

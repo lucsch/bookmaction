@@ -14,7 +14,7 @@ class BookMarkDlg(wx.Dialog):
 
         sbSizer1 = wx.StaticBoxSizer(wx.StaticBox(self, wx.ID_ANY, u"BookMark"), wx.VERTICAL)
 
-        bSizer3 = wx.BoxSizer(wx.HORIZONTAL)
+        bSizer3 = wx.BoxSizer(wx.VERTICAL)
 
         self.m_bookmarkCtrl = wx.TextCtrl(sbSizer1.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition,
                                           wx.Size(-1, -1), 0)
@@ -22,11 +22,19 @@ class BookMarkDlg(wx.Dialog):
 
         bSizer3.Add(self.m_bookmarkCtrl, 1, wx.ALL | wx.EXPAND, 5)
 
-        sbSizer1.Add(bSizer3, 1, wx.EXPAND, 5)
+        bSizer5 = wx.BoxSizer(wx.HORIZONTAL)
 
-        self.m_btnClipboard = wx.Button(sbSizer1.GetStaticBox(), wx.ID_ANY, u"Paste from Clipboard", wx.DefaultPosition,
-                                        wx.DefaultSize, 0)
-        sbSizer1.Add(self.m_btnClipboard, 0, wx.ALIGN_RIGHT | wx.ALL, 5)
+        self.m_btnClipboardPath = wx.Button(sbSizer1.GetStaticBox(), wx.ID_ANY, u"Paste Path", wx.DefaultPosition,
+                                            wx.DefaultSize, 0)
+        bSizer5.Add(self.m_btnClipboardPath, 0, wx.ALL, 5)
+
+        self.m_btnClipboardTxt = wx.Button(sbSizer1.GetStaticBox(), wx.ID_ANY, u"Paste text", wx.DefaultPosition,
+                                           wx.DefaultSize, 0)
+        bSizer5.Add(self.m_btnClipboardTxt, 0, wx.ALIGN_RIGHT | wx.ALL, 5)
+
+        bSizer3.Add(bSizer5, 0, wx.ALIGN_RIGHT, 5)
+
+        sbSizer1.Add(bSizer3, 1, wx.EXPAND, 5)
 
         bSizer2.Add(sbSizer1, 1, wx.EXPAND, 5)
 
@@ -63,7 +71,8 @@ class BookMarkDlg(wx.Dialog):
         self.m_BookMarkData = BookMark()
 
         # Connect Events
-        self.m_btnClipboard.Bind(wx.EVT_BUTTON, self.OnPasteFromClipboard)
+        self.m_btnClipboardTxt.Bind(wx.EVT_BUTTON, self.OnPasteTxtFromClipboard)
+        self.m_btnClipboardPath.Bind(wx.EVT_BUTTON, self.OnPastePathFromClipboard)
 
     def __del__(self):
         pass
@@ -86,6 +95,26 @@ class BookMarkDlg(wx.Dialog):
         else:
             self.SetBackgroundColour(wx.Colour(21, 21, 21))
 
-    # Virtual event handlers, overide them in your derived class
-    def OnPasteFromClipboard(self, event):
-        event.Skip()
+    def OnPasteTxtFromClipboard(self, event):
+        if not wx.TheClipboard.IsOpened():  # may crash, otherwise
+            do = wx.TextDataObject()
+            wx.TheClipboard.Open()
+            success = wx.TheClipboard.GetData(do)
+            wx.TheClipboard.Close()
+            if success:
+                self.m_bookmarkCtrl.SetValue(do.GetText())
+            else:
+                wx.MessageBox("""There is no data in the clipboard
+                         in the required format""")
+
+    def OnPastePathFromClipboard(self, event):
+        if not wx.TheClipboard.IsOpened():  # may crash, otherwise
+            do = wx.FileDataObject()
+            wx.TheClipboard.Open()
+            success = wx.TheClipboard.GetData(do)
+            wx.TheClipboard.Close()
+            if success:
+                self.m_bookmarkCtrl.SetValue(do.GetFilenames()[0])
+            else:
+                wx.MessageBox("""There is no data in the clipboard
+                         in the required format""")
