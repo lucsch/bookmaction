@@ -43,6 +43,7 @@ class BookMarkListCtrl(wx.ListCtrl):
             self.DeleteAllItems()
 
         self.Append(myInfo)
+        self.GetParent().m_bookmarkDocument.m_isModified = True
 
     def BookMarkEdit(self):
         # check for selected item
@@ -69,6 +70,9 @@ class BookMarkListCtrl(wx.ListCtrl):
         self.SetColumnText(itemindex, 0, myInfo[0])
         self.SetColumnText(itemindex, 1, myInfo[1])
         self.SetColumnText(itemindex, 2, myInfo[2])
+
+        self.GetParent().m_bookmarkDocument.m_isModified = True
+
 
     # def SetFiles(self, filenames, clearlist):
     #     if clearlist is True:
