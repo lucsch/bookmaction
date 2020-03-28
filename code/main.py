@@ -38,18 +38,6 @@ class BAFrame(wx.Frame):
         self.Layout()
         self.Centre(wx.BOTH)
 
-        self.__SetDialogAppearance()
-
-    def __SetDialogAppearance(self):
-        self.m_config = wx.FileConfig("bookmaction")
-        myAppearance = self.m_config.ReadInt("Appearance", 0)
-        if (myAppearance == 0):  # light mode
-            pass  # do nothing for da
-            # self.SetBackgroundColour(wx.Colour(236,236,236))
-            # self.SetForegroundColour(wx.BLACK)
-        else:
-            self.SetBackgroundColour(wx.Colour(21, 21, 21))
-
     def __CreateControls(self):
         icon = wx.Icon()
         icon.CopyFromBitmap(bitmaps.bookmaction.GetBitmap())
