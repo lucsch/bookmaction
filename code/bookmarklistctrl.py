@@ -39,9 +39,13 @@ class BookMarkListCtrl(wx.ListCtrl):
     def AddBookMark(self):
         dlg = BookMarkDlg(self)
         if (dlg.ShowModal() != wx.ID_OK):
-            pass
-
+            return
         myInfo = dlg.m_BookMarkData.GetMemberAsList()
+
+        # check if default text is present
+        if (self.GetItemText(0,1) == self.defaultColumnText):
+            self.DeleteAllItems()
+
         self.Append(myInfo)
 
 
