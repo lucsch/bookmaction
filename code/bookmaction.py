@@ -29,6 +29,7 @@ class BAFrame(wx.Frame):
             size=wx.DefaultSize,
             style=wx.DEFAULT_FRAME_STYLE | wx.TAB_TRAVERSAL)
 
+        self.m_title = self.GetTitle()
         self.__CreateControls()
         self.__CreateMenus()
         self.__CreateStatusAndVersion()
@@ -111,7 +112,7 @@ class BAFrame(wx.Frame):
 
         self.SetMenuBar(self.m_menubar)
 
-        # connect Menu events
+        # connect events
         self.Bind(wx.EVT_MENU, self.OnWebSite, id=self.m_menuWebsite.GetId())
         self.Bind(wx.EVT_MENU, self.OnBookMarkMenuAdd, id=self.m_menuBookAdd.GetId())
         self.Bind(wx.EVT_MENU, self.OnBookMarkMenuEdit, id=self.m_menuBookEdit.GetId())
@@ -122,6 +123,8 @@ class BAFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.OnFileOpen, id=wx.ID_OPEN)
         self.Bind(wx.EVT_MENU, self.OnFileSave, id=wx.ID_SAVE)
         self.Bind(wx.EVT_MENU, self.OnFileSaveAs, id=wx.ID_SAVEAS)
+
+        self.Bind(wx.EVT_IDLE, self.OnUpdateIdle)
 
     def __CreateStatusAndVersion(self):
         self.CreateStatusBar(2)
@@ -191,6 +194,19 @@ class BAFrame(wx.Frame):
 
         self.m_bookmarkDocument.LoadObject(filename)
         self.m_bookmarkDocument.SetBookMarksToList(self.m_listCtrl)
+
+    def OnUpdateIdle(self, event):
+        mydocname = self.m_bookmarkDocument.m_docName
+        mytitletext = ""
+        if (mydocname == ""):
+            mytitletext = self.m_title + " - " + "New Document"
+        else:
+            mytitletext = self.m_title + " - " + mydocname
+
+        if (self.m_bookmarkDocument.m_isModified == True):
+            mytitletext = mytitletext + "*"
+
+        self.SetTitle(mytitletext)
 
 
 ##########################################################
