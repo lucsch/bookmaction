@@ -6,12 +6,14 @@
 # Bookmarks action
 ##########################################################
 
+import os
 import wx
 import wx.adv
 import bitmaps
 import version  # this file is generated with git-version
 from bookmarklistctrl import *
 from settingsdlg import *
+from bookmarks import *
 
 
 ##########################################################
@@ -30,6 +32,8 @@ class BAFrame(wx.Frame):
         self.__CreateControls()
         self.__CreateMenus()
         self.__CreateStatusAndVersion()
+
+        self.m_bookmarkDocument = BookMarkDocument()
 
         # computing minimum size
         # mysizepanel = bSizer5.ComputeFittingWindowSize(self)
@@ -58,7 +62,7 @@ class BAFrame(wx.Frame):
                                      wx.ITEM_NORMAL)
         self.m_menu1.Append(self.m_menuNew)
 
-        self.m_menuOpen = wx.MenuItem(self.m_menu1, wx.ID_ANY, u"Open" + u"\t" + u"Ctrl+O", wx.EmptyString,
+        self.m_menuOpen = wx.MenuItem(self.m_menu1, wx.ID_OPEN, u"Open" + u"\t" + u"Ctrl+O", wx.EmptyString,
                                       wx.ITEM_NORMAL)
         self.m_menu1.Append(self.m_menuOpen)
 
@@ -66,7 +70,7 @@ class BAFrame(wx.Frame):
                                       wx.ITEM_NORMAL)
         self.m_menu1.Append(self.m_menuSave)
 
-        self.m_menuSaveAs = wx.MenuItem(self.m_menu1, wx.ID_ANY, u"Save as...", wx.EmptyString, wx.ITEM_NORMAL)
+        self.m_menuSaveAs = wx.MenuItem(self.m_menu1, wx.ID_SAVEAS, u"Save as...", wx.EmptyString, wx.ITEM_NORMAL)
         self.m_menu1.Append(self.m_menuSaveAs)
 
         self.m_menu1.AppendSeparator()
@@ -115,6 +119,9 @@ class BAFrame(wx.Frame):
 
         self.Bind(wx.EVT_MENU, self.OnQuit, id=wx.ID_EXIT)
         self.Bind(wx.EVT_MENU, self.OnAbout, id=wx.ID_ABOUT)
+        self.Bind(wx.EVT_MENU, self.OnFileOpen, id=wx.ID_OPEN)
+        self.Bind(wx.EVT_MENU, self.OnFileSave, id=wx.ID_SAVE)
+        self.Bind(wx.EVT_MENU, self.OnFileSaveAs, id=wx.ID_SAVEAS)
 
     def __CreateStatusAndVersion(self):
         self.CreateStatusBar(2)
@@ -150,6 +157,40 @@ class BAFrame(wx.Frame):
     def OnSettingsMenu(self, event):
         mydlg = SettingsDlg(self)
         mydlg.ShowModal()
+
+    def OnFileSave(self, event):
+        if (self.m_bookmarkDocument.m_docName == ""):
+            return self.OnFileSaveAs(event)
+
+        self.__SaveFile(self.m_bookmarkDocument.m_docName)
+
+    def OnFileSaveAs(self, event):
+        mydlg = wx.FileDialog(self, "Save Bookmaction project", wildcard="BMKA files (*.bmka)|*.bmka",
+                              style=wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT)
+        if (mydlg.ShowModal() == wx.ID_CANCEL):
+            return
+
+        self.__SaveFile(mydlg.GetPath())
+
+    def __SaveFile(self, filename):
+        self.m_bookmarkDocument.GetBookMarksFromList(self.m_listCtrl)
+        self.m_bookmarkDocument.SaveObject(filename)
+
+    def OnFileOpen(self, event):
+        mydlg = wx.FileDialog(self, "Open Bookmaction project", wildcard="BMKA files (*.bmka)|*.bmka",
+                              style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST)
+        if (mydlg.ShowModal() == wx.ID_CANCEL):
+            return
+
+        self.__OpenFile(mydlg.GetPath())
+
+    def __OpenFile(self, filename):
+        if (os.path.exists(filename) == False):
+            wx.LogError("The file : {} didn't exists", filename)
+            return
+
+        self.m_bookmarkDocument.LoadObject(filename)
+        self.m_bookmarkDocument.SetBookMarksToList(self.m_listCtrl)
 
 
 ##########################################################
