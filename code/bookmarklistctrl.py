@@ -14,7 +14,7 @@ class BookMarkListCtrl(wx.ListCtrl):
             style=wx.LC_REPORT | wx.LC_HRULES)
 
         # initing 2 columns
-        self.InsertColumn(0, "Action", format=wx.LIST_FORMAT_CENTER, width=100)
+        self.InsertColumn(0, "Action", width=150)
         self.InsertColumn(1, "BookMark", width=400)
         self.InsertColumn(2, "Description", width=200)
 

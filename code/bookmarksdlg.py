@@ -20,7 +20,7 @@ class BookMarkDlg(wx.Dialog):
                                           wx.Size(-1, -1), 0)
         self.m_bookmarkCtrl.SetMinSize(wx.Size(300, -1))
 
-        bSizer3.Add(self.m_bookmarkCtrl, 1, wx.ALL | wx.EXPAND, 5)
+        bSizer3.Add(self.m_bookmarkCtrl, 0, wx.ALL | wx.EXPAND, 5)
 
         bSizer5 = wx.BoxSizer(wx.HORIZONTAL)
 
@@ -30,13 +30,21 @@ class BookMarkDlg(wx.Dialog):
 
         self.m_btnClipboardTxt = wx.Button(sbSizer1.GetStaticBox(), wx.ID_ANY, u"Paste text", wx.DefaultPosition,
                                            wx.DefaultSize, 0)
-        bSizer5.Add(self.m_btnClipboardTxt, 0, wx.ALIGN_RIGHT | wx.ALL, 5)
+        bSizer5.Add(self.m_btnClipboardTxt, 0, wx.ALL, 5)
 
         bSizer3.Add(bSizer5, 0, wx.ALIGN_RIGHT, 5)
 
-        sbSizer1.Add(bSizer3, 1, wx.EXPAND, 5)
+        sbSizer1.Add(bSizer3, 0, wx.EXPAND, 5)
 
-        bSizer2.Add(sbSizer1, 1, wx.EXPAND, 5)
+        bSizer2.Add(sbSizer1, 0, wx.EXPAND, 5)
+
+        sbSizer4 = wx.StaticBoxSizer(wx.StaticBox(self, wx.ID_ANY, u"Description"), wx.VERTICAL)
+
+        self.m_descriptionCtrl = wx.TextCtrl(sbSizer4.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition,
+                                             wx.Size(300, 100), 0)
+        sbSizer4.Add(self.m_descriptionCtrl, 1, wx.ALL | wx.EXPAND, 5)
+
+        bSizer2.Add(sbSizer4, 1, wx.EXPAND, 5)
 
         sbSizer2 = wx.StaticBoxSizer(wx.StaticBox(self, wx.ID_ANY, u"Action when double-clicked"), wx.VERTICAL)
 
@@ -66,8 +74,8 @@ class BookMarkDlg(wx.Dialog):
 
         self.Centre(wx.BOTH)
 
+        # End of the control definition
         self.__SetDialogAppearance()
-
         self.m_BookMarkData = BookMark()
 
         # Connect Events
@@ -79,7 +87,7 @@ class BookMarkDlg(wx.Dialog):
 
     def TransferDataFromWindow(self):
         self.m_BookMarkData.m_path = self.m_bookmarkCtrl.GetValue()
-        self.m_BookMarkData.m_description = ""
+        self.m_BookMarkData.m_description = self.m_descriptionCtrl.GetValue()
         self.m_BookMarkData.m_action = BookMarkAction.OPEN
         if (self.m_radioBtn2.GetValue() == True):
             self.m_BookMarkData.m_action = BookMarkAction.COPY_TO_CLIPBOARD
