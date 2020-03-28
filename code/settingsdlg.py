@@ -15,11 +15,20 @@ class SettingsDlg(wx.Dialog):
 
         bSizer4 = wx.BoxSizer(wx.VERTICAL)
 
-        m_radioBox1Choices = [u"Light mode", u"Dark mode"]
-        self.m_radioBox1 = wx.RadioBox(self, wx.ID_ANY, u"Appearance", wx.DefaultPosition, wx.DefaultSize,
-                                       m_radioBox1Choices, 1, wx.RA_SPECIFY_COLS)
-        self.m_radioBox1.SetSelection(0)
-        bSizer4.Add(self.m_radioBox1, 1, wx.ALL | wx.EXPAND, 5)
+        sbSizer3 = wx.StaticBoxSizer(wx.StaticBox(self, wx.ID_ANY, u"Appearance"), wx.VERTICAL)
+
+        self.m_darkModeCtrl = wx.CheckBox(sbSizer3.GetStaticBox(), wx.ID_ANY, u"Dark mode", wx.DefaultPosition,
+                                          wx.DefaultSize, 0)
+        sbSizer3.Add(self.m_darkModeCtrl, 0, wx.ALL, 5)
+
+        self.m_staticText1 = wx.StaticText(sbSizer3.GetStaticBox(), wx.ID_ANY,
+                                           u"Restart needed in order to take action", wx.DefaultPosition,
+                                           wx.DefaultSize, 0)
+        self.m_staticText1.Wrap(-1)
+
+        sbSizer3.Add(self.m_staticText1, 0, wx.ALL, 5)
+
+        bSizer4.Add(sbSizer3, 1, wx.EXPAND, 5)
 
         m_sdbSizer2 = wx.StdDialogButtonSizer()
         self.m_sdbSizer2OK = wx.Button(self, wx.ID_OK)
@@ -39,7 +48,7 @@ class SettingsDlg(wx.Dialog):
         # Getting config
         self.m_config = wx.FileConfig("bookmaction")
         myAppearance = self.m_config.ReadInt("Appearance", 0)
-        self.m_radioBox1.SetSelection(myAppearance)
+        self.m_darkModeCtrl.SetValue(myAppearance)
         self.__SetDialogAppearance()
 
         # connecting event
@@ -56,7 +65,7 @@ class SettingsDlg(wx.Dialog):
             self.SetBackgroundColour(wx.Colour(21, 21, 21))
 
     def OnBtnOk(self, event):
-        self.m_config.WriteInt("Appearance", self.m_radioBox1.GetSelection())
+        self.m_config.WriteInt("Appearance", self.m_darkModeCtrl.IsChecked())
         self.Close()
 
     def __del__(self):

@@ -35,9 +35,20 @@ class BAFrame(wx.Frame):
         # mysizepanel = bSizer5.ComputeFittingWindowSize(self)
         # self.SetMinSize([mysizebutton[0] + mysizepanel[0], mysizebutton[1]])
         self.SetSize([900, 600])
-
         self.Layout()
         self.Centre(wx.BOTH)
+
+        self.__SetDialogAppearance()
+
+    def __SetDialogAppearance(self):
+        self.m_config = wx.FileConfig("bookmaction")
+        myAppearance = self.m_config.ReadInt("Appearance", 0)
+        if (myAppearance == 0):  # light mode
+            pass  # do nothing for da
+            # self.SetBackgroundColour(wx.Colour(236,236,236))
+            # self.SetForegroundColour(wx.BLACK)
+        else:
+            self.SetBackgroundColour(wx.Colour(21, 21, 21))
 
     def __CreateControls(self):
         icon = wx.Icon()
@@ -112,7 +123,6 @@ class BAFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.OnWebSite, id=self.m_menuWebsite.GetId())
         self.Bind(wx.EVT_MENU, self.OnAddBookMarkMenu, id=self.m_menuBookAdd.GetId())
         self.Bind(wx.EVT_MENU, self.OnSettingsMenu, id=self.m_menuSettings.GetId())
-
 
         self.Bind(wx.EVT_MENU, self.OnQuit, id=wx.ID_EXIT)
         self.Bind(wx.EVT_MENU, self.OnAbout, id=wx.ID_ABOUT)

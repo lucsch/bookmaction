@@ -40,7 +40,6 @@ class BookMarkListCtrl(wx.ListCtrl):
         dlg = BookMarkDlg(self)
         dlg.ShowModal()
 
-
     # def SetFiles(self, filenames, clearlist):
     #     if clearlist is True:
     #         self.DeleteAllItems()

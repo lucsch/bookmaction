@@ -56,18 +56,23 @@ class BookMarkDlg(wx.Dialog):
 
         self.Centre(wx.BOTH)
 
+        self.__SetDialogAppearance()
+
         # Connect Events
         self.m_btnClipboard.Bind(wx.EVT_BUTTON, self.OnPasteFromClipboard)
 
     def __del__(self):
         pass
 
-    def OnSysColourChanged(self, event):
-        myColour = wx.SystemSettings.GetColour(wx.SYS_COLOUR_WINDOW)
-        if (myColour.Red() < 75):  ## dark mode
+    def __SetDialogAppearance(self):
+        self.m_config = wx.FileConfig("bookmaction")
+        myAppearance = self.m_config.ReadInt("Appearance", 0)
+        if (myAppearance == 0):  # light mode
+            pass  # do nothing for da
+            # self.SetBackgroundColour(wx.Colour(236,236,236))
+            # self.SetForegroundColour(wx.BLACK)
+        else:
             self.SetBackgroundColour(wx.Colour(21, 21, 21))
-        else:  ## light mode
-            self.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_WINDOW))
 
     # Virtual event handlers, overide them in your derived class
     def OnPasteFromClipboard(self, event):
