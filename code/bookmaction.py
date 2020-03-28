@@ -125,6 +125,7 @@ class BAFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.OnFileSaveAs, id=wx.ID_SAVEAS)
 
         self.Bind(wx.EVT_IDLE, self.OnUpdateIdle)
+        self.Bind(wx.EVT_CLOSE, self.OnClose)
 
     def __CreateStatusAndVersion(self):
         self.CreateStatusBar(2)
@@ -199,7 +200,7 @@ class BAFrame(wx.Frame):
         mydocname = self.m_bookmarkDocument.m_docName
         mytitletext = ""
         if (mydocname == ""):
-            mytitletext = self.m_title + " - " + "New Document"
+            mytitletext = self.m_title + " - " + "untitled"
         else:
             mytitletext = self.m_title + " - " + mydocname
 
@@ -207,6 +208,28 @@ class BAFrame(wx.Frame):
             mytitletext = mytitletext + "*"
 
         self.SetTitle(mytitletext)
+
+    def OnClose(self, event):
+        if (event.CanVeto() and self.m_bookmarkDocument.m_isModified == True):
+            if (self.__ProjectQuestion("closing") == False):
+                event.Veto()
+                return
+            event.Skip()
+
+    def __ProjectQuestion(self, text):
+        myprojname = self.m_bookmarkDocument.m_docName
+        if (myprojname == ""):
+            myprojname == "untitled"
+
+        myanswer = wx.MessageBox("Project {} was modified, Save modification before {}".format(myprojname, text),
+                                 "Project modified",
+                                 wx.ICON_EXCLAMATION | wx.YES_NO | wx.CANCEL, self)
+        if (myanswer == wx.YES):
+            self.OnFileSave(wx.Event())
+            return True
+        elif (myanswer == wx.NO):
+            return True
+        return False
 
 
 ##########################################################
