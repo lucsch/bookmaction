@@ -30,20 +30,41 @@ class BookMarkListCtrl(wx.ListCtrl):
         self.Append(["", self.defaultColumnText])
 
     def SetColumnText(self, index, column, text):
-        self.SetStringItem(index, column, str(text))
+        self.SetItem(index, column, str(text))
 
-    def AddBookMark(self):
+    def BookMarkAdd(self):
         dlg = BookMarkDlg(self)
         if (dlg.ShowModal() != wx.ID_OK):
             return
         myInfo = dlg.m_BookMarkData.GetMemberAsList()
 
         # check if default text is present
-        if (self.GetItemText(0,1) == self.defaultColumnText):
+        if (self.GetItemText(0, 1) == self.defaultColumnText):
             self.DeleteAllItems()
 
         self.Append(myInfo)
 
+    def BookMarkEdit(self):
+        # check for selected item
+        if (self.GetSelectedItemCount() == 0 or self.GetSelectedItemCount() > 1):
+            wx.LogWarning("Select only one bookmark!")
+            return
+
+        itemindex = self.GetFirstSelected()
+        myData = BookMark()
+        myData.SetBookMarkActionFromText(self.GetItemText(itemindex, col=0))
+        myData.m_path = self.GetItemText(itemindex, col=1)
+        myData.m_description = self.GetItemText(itemindex, col=2)
+
+        dlg = BookMarkDlg(self)
+        dlg.m_BookMarkData = myData
+        if (dlg.ShowModal() != wx.ID_OK):
+            return
+        myInfo = dlg.m_BookMarkData.GetMemberAsList()
+
+        self.SetColumnText(itemindex, 0, myInfo[0])
+        self.SetColumnText(itemindex, 1, myInfo[1])
+        self.SetColumnText(itemindex, 2, myInfo[2])
 
     # def SetFiles(self, filenames, clearlist):
     #     if clearlist is True:

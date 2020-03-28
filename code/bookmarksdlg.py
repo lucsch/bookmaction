@@ -93,6 +93,15 @@ class BookMarkDlg(wx.Dialog):
             self.m_BookMarkData.m_action = BookMarkAction.COPY_TO_CLIPBOARD
         return True
 
+    def TransferDataToWindow(self):
+        self.m_bookmarkCtrl.SetValue(self.m_BookMarkData.m_path)
+        self.m_descriptionCtrl.SetValue(self.m_BookMarkData.m_description)
+
+        if(self.m_BookMarkData.m_action == BookMarkAction.COPY_TO_CLIPBOARD):
+            # self.m_radioBtn1.SetValue(False)
+            self.m_radioBtn2.SetValue(True)
+        return True
+
     def __SetDialogAppearance(self):
         self.m_config = wx.FileConfig("bookmaction")
         myAppearance = self.m_config.ReadInt("Appearance", 0)

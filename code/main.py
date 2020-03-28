@@ -109,7 +109,8 @@ class BAFrame(wx.Frame):
 
         # connect Menu events
         self.Bind(wx.EVT_MENU, self.OnWebSite, id=self.m_menuWebsite.GetId())
-        self.Bind(wx.EVT_MENU, self.OnAddBookMarkMenu, id=self.m_menuBookAdd.GetId())
+        self.Bind(wx.EVT_MENU, self.OnBookMarkMenuAdd, id=self.m_menuBookAdd.GetId())
+        self.Bind(wx.EVT_MENU, self.OnBookMarkMenuEdit, id=self.m_menuBookEdit.GetId())
         self.Bind(wx.EVT_MENU, self.OnSettingsMenu, id=self.m_menuSettings.GetId())
 
         self.Bind(wx.EVT_MENU, self.OnQuit, id=wx.ID_EXIT)
@@ -140,8 +141,11 @@ class BAFrame(wx.Frame):
         info.Description = """Bookmarks manager with actions"""
         wx.adv.AboutBox(info)
 
-    def OnAddBookMarkMenu(self, event):
-        self.m_listCtrl.AddBookMark()
+    def OnBookMarkMenuAdd(self, event):
+        self.m_listCtrl.BookMarkAdd()
+
+    def OnBookMarkMenuEdit(self, event):
+        self.m_listCtrl.BookMarkEdit()
 
     def OnSettingsMenu(self, event):
         mydlg = SettingsDlg(self)
