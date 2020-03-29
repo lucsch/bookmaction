@@ -1,3 +1,6 @@
+import os
+import platform
+import subprocess
 import wx
 import pickle
 from enum import Enum
@@ -38,13 +41,27 @@ class BookMark():
         if (text == "Open"):
             self.m_action = BookMarkAction.OPEN
 
+    def DoAction(self):
+        if (self.m_action == BookMarkAction.COPY_TO_CLIPBOARD):
+            if (wx.TheClipboard.Open()):
+                wx.TheClipboard.SetData(wx.TextDataObject(self.m_path))
+                wx.TheClipboard.Close()
+        elif (self.m_action == BookMarkAction.OPEN):
+            if platform.system() == "Windows":
+                os.startfile(self.m_path)
+            elif platform.system() == "Darwin":
+                subprocess.Popen(["open", self.m_path])
+            else:
+                subprocess.Popen(["xdg-open", self.m_path])
+
 
 ##########################################################
 #   BOOKMARK DOCUMENT
 ##########################################################
 class BookMarkDocument():
     """"""
-    def __init__(self,):
+
+    def __init__(self, ):
         """Constructor for BookMarkDocument"""
         self.m_bookMarksList = []
         self.m_docName = ""
@@ -74,4 +91,3 @@ class BookMarkDocument():
             myData.m_path = listctrl.GetItemText(index, col=1)
             myData.m_description = listctrl.GetItemText(index, col=2)
             self.m_bookMarksList.append(myData)
-

@@ -24,6 +24,7 @@ class BookMarkListCtrl(wx.ListCtrl):
         # bind events
         # self.Bind(wx.EVT_LIST_DELETE_ITEM, self.OnDeleteListItem)
         self.Bind(wx.EVT_LIST_KEY_DOWN, self.OnDeleteListItem)
+        self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.OnDoubleClickItem)
 
     def ClearList(self):
         self.DeleteAllItems()
@@ -56,13 +57,10 @@ class BookMarkListCtrl(wx.ListCtrl):
         if (self.GetItemText(itemindex, col=1) == self.defaultColumnText):
             return
 
-        myData = BookMark()
-        myData.SetBookMarkActionFromText(self.GetItemText(itemindex, col=0))
-        myData.m_path = self.GetItemText(itemindex, col=1)
-        myData.m_description = self.GetItemText(itemindex, col=2)
+        my_data = self.__GetBookMarkDataFromList(itemindex)
 
         dlg = BookMarkDlg(self)
-        dlg.m_BookMarkData = myData
+        dlg.m_BookMarkData = my_data
         if (dlg.ShowModal() != wx.ID_OK):
             return
         myInfo = dlg.m_BookMarkData.GetMemberAsList()
@@ -72,6 +70,18 @@ class BookMarkListCtrl(wx.ListCtrl):
         self.SetColumnText(itemindex, 2, myInfo[2])
 
         self.GetParent().m_bookmarkDocument.m_isModified = True
+
+    def __GetBookMarkDataFromList(self, index):
+        my_data = BookMark()
+        my_data.SetBookMarkActionFromText(self.GetItemText(index, col=0))
+        my_data.m_path = self.GetItemText(index, col=1)
+        my_data.m_description = self.GetItemText(index, col=2)
+        return my_data
+
+    def OnDoubleClickItem(self, event):
+        my_data = self.__GetBookMarkDataFromList(event.GetIndex())
+        my_data.DoAction()
+
 
 
     # def SetFiles(self, filenames, clearlist):
