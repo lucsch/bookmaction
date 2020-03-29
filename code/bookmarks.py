@@ -4,6 +4,7 @@ import subprocess
 import wx
 import pickle
 from enum import Enum
+import bookmarksdlg
 
 
 class BookMarkAction(Enum):
@@ -19,6 +20,7 @@ class BookMark():
 
     def __init__(self, ):
         """Constructor for BookMark"""
+        self.m_id = wx.NewIdRef()
         self.m_path = ""
         self.m_description = ""
         self.m_action = BookMarkAction.OPEN
@@ -80,14 +82,49 @@ class BookMarkDocument():
     def SetBookMarksToList(self, listctrl):
         listctrl.DeleteAllItems()
         for bookmark in self.m_bookMarksList:
-            mylist = bookmark.GetMemberAsList()
-            listctrl.Append(mylist)
+            listctrl.Append(bookmark.GetMemberAsList())
+            listctrl.SetItemData(listctrl.GetItemCount() - 1, bookmark.m_id)
 
     def GetBookMarksFromList(self, listctrl):
         self.m_bookMarksList.clear()
         for index in range(listctrl.GetItemCount()):
-            myData = BookMark()
-            myData.SetBookMarkActionFromText(listctrl.GetItemText(index, col=0))
-            myData.m_path = listctrl.GetItemText(index, col=1)
-            myData.m_description = listctrl.GetItemText(index, col=2)
+            myData = listctrl.GetBookMarkDataFromList(index)
             self.m_bookMarksList.append(myData)
+
+    def BookMarkAdd(self, listctrl):
+        dlg = bookmarksdlg.BookMarkDlg(listctrl.GetParent())
+        if (dlg.ShowModal() != wx.ID_OK):
+            return False
+
+        my_bookmark = BookMark()
+        if (dlg.m_radioBtn2.GetValue() == True):
+            my_bookmark.m_action = BookMarkAction.COPY_TO_CLIPBOARD
+        my_bookmark.m_path = dlg.m_bookmarkCtrl.GetValue()
+        my_bookmark.m_description = dlg.m_descriptionCtrl.GetValue()
+        self.m_bookMarksList.append(my_bookmark)
+        listctrl.BookMarkAdd(my_bookmark)
+        self.m_isModified = True
+        return True
+
+    def __GetIndexById(self, id):
+        for index, item in enumerate(self.m_bookMarksList):
+            if (item.m_id == id):
+                return index
+        return -1
+
+    def BookMarkEdit(self, listctrl):
+        if (listctrl.IsValidSelectedItem() == False):
+            return
+
+        my_index = self.__GetIndexById(listctrl.GetItemData(listctrl.GetFirstSelected()))
+        dlg = bookmarksdlg.BookMarkDlg(listctrl.GetParent())
+        dlg.m_BookMarkData = self.m_bookMarksList[my_index]
+        if (dlg.ShowModal() != wx.ID_OK):
+            return False
+
+        self.m_bookMarksList[my_index] = dlg.m_BookMarkData
+        listctrl.BookMarkEdit(self.m_bookMarksList[my_index], listctrl.GetFirstSelected())
+        self.m_isModified = True
+
+    def BookMarkDelete(self, listctrl):
+        pass

@@ -1,5 +1,5 @@
 import wx
-from bookmarksdlg import *
+import bookmarks
 
 
 class BookMarkListCtrl(wx.ListCtrl):
@@ -33,56 +33,42 @@ class BookMarkListCtrl(wx.ListCtrl):
     def SetColumnText(self, index, column, text):
         self.SetItem(index, column, str(text))
 
-    def BookMarkAdd(self):
-        dlg = BookMarkDlg(self)
-        if (dlg.ShowModal() != wx.ID_OK):
-            return
-        myInfo = dlg.m_BookMarkData.GetMemberAsList()
-
+    def BookMarkAdd(self, bookmark):
         # check if default text is present
         if (self.GetItemText(0, 1) == self.defaultColumnText):
             self.DeleteAllItems()
 
-        self.Append(myInfo)
-        self.GetParent().m_bookmarkDocument.m_isModified = True
+        self.Append(bookmark.GetMemberAsList())
+        self.SetItemData(self.GetItemCount() - 1, bookmark.m_id)
 
-    def BookMarkEdit(self):
+    def BookMarkEdit(self, bookmark, index):
+        self.SetColumnText(index, 0, bookmark.GetBookMarkActionToText())
+        self.SetColumnText(index, 1, bookmark.m_path)
+        self.SetColumnText(index, 2, bookmark.m_description)
+
+    def IsValidSelectedItem(self):
         # check for selected item
         if (self.GetSelectedItemCount() == 0 or self.GetSelectedItemCount() > 1):
             wx.LogWarning("Select only one bookmark!")
-            return
+            return False
 
         itemindex = self.GetFirstSelected()
         # check and ignore default text
         if (self.GetItemText(itemindex, col=1) == self.defaultColumnText):
-            return
+            return False
+        return True
 
-        my_data = self.__GetBookMarkDataFromList(itemindex)
-
-        dlg = BookMarkDlg(self)
-        dlg.m_BookMarkData = my_data
-        if (dlg.ShowModal() != wx.ID_OK):
-            return
-        myInfo = dlg.m_BookMarkData.GetMemberAsList()
-
-        self.SetColumnText(itemindex, 0, myInfo[0])
-        self.SetColumnText(itemindex, 1, myInfo[1])
-        self.SetColumnText(itemindex, 2, myInfo[2])
-
-        self.GetParent().m_bookmarkDocument.m_isModified = True
-
-    def __GetBookMarkDataFromList(self, index):
-        my_data = BookMark()
+    def GetBookMarkDataFromList(self, index):
+        my_data = bookmarks.BookMark()
+        my_data.m_id = self.GetItemData(index)
         my_data.SetBookMarkActionFromText(self.GetItemText(index, col=0))
         my_data.m_path = self.GetItemText(index, col=1)
         my_data.m_description = self.GetItemText(index, col=2)
         return my_data
 
     def OnDoubleClickItem(self, event):
-        my_data = self.__GetBookMarkDataFromList(event.GetIndex())
+        my_data = self.GetBookMarkDataFromList(event.GetIndex())
         my_data.DoAction()
-
-
 
     # def SetFiles(self, filenames, clearlist):
     #     if clearlist is True:

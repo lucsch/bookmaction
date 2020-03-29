@@ -158,10 +158,12 @@ class BAFrame(wx.Frame):
         wx.adv.AboutBox(info)
 
     def OnBookMarkMenuAdd(self, event):
-        self.m_listCtrl.BookMarkAdd()
+        self.m_bookmarkDocument.BookMarkAdd(self.m_listCtrl)
+        #self.m_listCtrl.BookMarkAdd()
 
     def OnBookMarkMenuEdit(self, event):
-        self.m_listCtrl.BookMarkEdit()
+        self.m_bookmarkDocument.BookMarkEdit(self.m_listCtrl)
+        # self.m_listCtrl.BookMarkEdit()
 
     def OnSettingsMenu(self, event):
         mydlg = SettingsDlg(self)
@@ -233,7 +235,7 @@ class BAFrame(wx.Frame):
                                  "Project modified",
                                  wx.ICON_EXCLAMATION | wx.YES_NO | wx.CANCEL, self)
         if (myanswer == wx.YES):
-            self.OnFileSave(wx.Event())
+            self.OnFileSave(wx.CommandEvent())
             return True
         elif (myanswer == wx.NO):
             return True

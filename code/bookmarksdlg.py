@@ -1,6 +1,6 @@
 import wx
 
-from bookmarks import *
+import bookmarks
 
 
 class BookMarkDlg(wx.Dialog):
@@ -76,7 +76,7 @@ class BookMarkDlg(wx.Dialog):
 
         # End of the control definition
         self.__SetDialogAppearance()
-        self.m_BookMarkData = BookMark()
+        self.m_BookMarkData = bookmarks.BookMark()
 
         # Connect Events
         self.m_btnClipboardTxt.Bind(wx.EVT_BUTTON, self.OnPasteTxtFromClipboard)
@@ -88,16 +88,16 @@ class BookMarkDlg(wx.Dialog):
     def TransferDataFromWindow(self):
         self.m_BookMarkData.m_path = self.m_bookmarkCtrl.GetValue()
         self.m_BookMarkData.m_description = self.m_descriptionCtrl.GetValue()
-        self.m_BookMarkData.m_action = BookMarkAction.OPEN
+        self.m_BookMarkData.m_action = bookmarks.BookMarkAction.OPEN
         if (self.m_radioBtn2.GetValue() == True):
-            self.m_BookMarkData.m_action = BookMarkAction.COPY_TO_CLIPBOARD
+            self.m_BookMarkData.m_action = bookmarks.BookMarkAction.COPY_TO_CLIPBOARD
         return True
 
     def TransferDataToWindow(self):
         self.m_bookmarkCtrl.SetValue(self.m_BookMarkData.m_path)
         self.m_descriptionCtrl.SetValue(self.m_BookMarkData.m_description)
 
-        if(self.m_BookMarkData.m_action == BookMarkAction.COPY_TO_CLIPBOARD):
+        if (self.m_BookMarkData.m_action == bookmarks.BookMarkAction.COPY_TO_CLIPBOARD):
             # self.m_radioBtn1.SetValue(False)
             self.m_radioBtn2.SetValue(True)
         return True
