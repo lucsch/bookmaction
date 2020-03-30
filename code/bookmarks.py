@@ -127,4 +127,10 @@ class BookMarkDocument():
         self.m_isModified = True
 
     def BookMarkDelete(self, listctrl):
-        pass
+        if (listctrl.IsValidSelectedItem() == False):
+            return
+
+        my_index = self.__GetIndexById(listctrl.GetItemData(listctrl.GetFirstSelected()))
+        self.m_bookMarksList.pop(my_index)
+        listctrl.DeleteItem(listctrl.GetFirstSelected())
+        self.m_isModified = True

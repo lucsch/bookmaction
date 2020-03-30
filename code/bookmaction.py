@@ -121,6 +121,7 @@ class BAFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.OnWebSite, id=self.m_menuWebsite.GetId())
         self.Bind(wx.EVT_MENU, self.OnBookMarkMenuAdd, id=self.m_menuBookAdd.GetId())
         self.Bind(wx.EVT_MENU, self.OnBookMarkMenuEdit, id=self.m_menuBookEdit.GetId())
+        self.Bind(wx.EVT_MENU, self.OnBookMarkMenuDelete, id=self.m_menuBookRemove.GetId())
         self.Bind(wx.EVT_MENU, self.OnSettingsMenu, id=self.m_menuSettings.GetId())
 
         self.Bind(wx.EVT_MENU, self.OnQuit, id=wx.ID_EXIT)
@@ -159,11 +160,12 @@ class BAFrame(wx.Frame):
 
     def OnBookMarkMenuAdd(self, event):
         self.m_bookmarkDocument.BookMarkAdd(self.m_listCtrl)
-        #self.m_listCtrl.BookMarkAdd()
 
     def OnBookMarkMenuEdit(self, event):
         self.m_bookmarkDocument.BookMarkEdit(self.m_listCtrl)
-        # self.m_listCtrl.BookMarkEdit()
+
+    def OnBookMarkMenuDelete(self, event):
+        self.m_bookmarkDocument.BookMarkDelete(self.m_listCtrl)
 
     def OnSettingsMenu(self, event):
         mydlg = SettingsDlg(self)

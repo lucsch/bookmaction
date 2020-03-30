@@ -70,52 +70,10 @@ class BookMarkListCtrl(wx.ListCtrl):
         my_data = self.GetBookMarkDataFromList(event.GetIndex())
         my_data.DoAction()
 
-    # def SetFiles(self, filenames, clearlist):
-    #     if clearlist is True:
-    #         self.DeleteAllItems()
-    #     if (len(self.GetFilenames()) == 0):
-    #         self.DeleteAllItems()
-    #     starter = self.GetItemCount()
-    #     for index, filename in enumerate(filenames):
-    #         self.Append([index + 1 + starter, filename])
-    #
-    # def PasteFilesFromClipboard(self, clearlist):
-    #     if not wx.TheClipboard.IsOpened():  # may crash, otherwise
-    #         do = wx.FileDataObject()
-    #         wx.TheClipboard.Open()
-    #         success = wx.TheClipboard.GetData(do)
-    #         wx.TheClipboard.Close()
-    #         if success:
-    #             self.SetFiles(do.GetFilenames(), clearlist)
-    #         else:
-    #             wx.MessageBox("""There is no data in the clipboard
-    #             in the required format""")
-    #
-    # def CopyFilesToClipboard(self):
-    #     """copy the list content to the clipboard"""
-    #     if (len(self.GetFilenames()) == 0):
-    #         return
-    #
-    #     mytxt = "\n".join(self.GetFilenames())
-    #
-    #     if not wx.TheClipboard.IsOpened():
-    #         do = wx.TextDataObject(mytxt)
-    #         wx.TheClipboard.Open()
-    #         wx.TheClipboard.SetData(do)
-    #         wx.TheClipboard.Close()
-
     def OnDeleteListItem(self, event):
-        if (event.GetKeyCode() == wx.WXK_DELETE or
-                event.GetKeyCode() == wx.WXK_BACK and
-                self.GetFirstSelected() != -1):
-            if (self.GetItemText(
-                    self.GetFirstSelected(), 1) != self.defaultColumnText):
-                self.DeleteItem(self.GetFirstSelected())
+        if (event.GetKeyCode() != wx.WXK_DELETE or event.GetKeyCode() != wx.WXK_BACK):
+            event.Skip()
+            return
 
-                # change all numbers
-                for index in range(self.GetItemCount()):
-                    self.SetItemText(index, str(index + 1))
-
-                if self.GetItemCount() == 0:
-                    self.Append(["", self.defaultColumnText])
+        self.GetParent().OnBookMarkMenuDelete(wx.CommandEvent())
         event.Skip()
