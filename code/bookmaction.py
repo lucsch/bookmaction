@@ -138,7 +138,7 @@ class BAFrame(wx.Frame):
         self.SetStatusText(self.__GetGitVersion(), 1)
 
     def __GetGitVersion(self):
-        return "version: " + str(version.GIT_COMMITS_SINCE_TAG) + " (" + version.GIT_COMMIT_ID + ")"
+        return "version: " + str(version.COMMIT_NUMBER) + " (" + version.COMMIT_ID + ")"
 
     def __del__(self):
         pass

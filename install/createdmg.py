@@ -17,8 +17,8 @@ def CreateInstaller(name, app_path, use_version=True):
     if use_version is True:
         with open(os.path.join(basepath, "code", "version.py")) as reader:
             for line in reader:
-                if line.startswith("GIT_COMMITS_SINCE_TAG"):
-                    version = int(line[24:])
+                if line.startswith("COMMIT_NUMBER"):
+                    version = int(line[15:-2])
 
         if (version):
             print("Git version is:", version)

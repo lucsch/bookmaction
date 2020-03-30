@@ -10,6 +10,7 @@ import os
 import subprocess
 import fileinput
 import argparse
+import createversion
 
 ACTIVE_PLATEFORM = ["Windows", "Linux", "OSX"]
 
@@ -23,6 +24,7 @@ class CreateApp(object):
         self.binpath = os.path.join(self.basepath, "bin")
         self.plateform = plateform
         self.iconfile = os.path.join(self.basepath, "art", self._get_icon())
+        self.m_commit_number = ""
 
     def _get_icon(self):
         """return the icon based on the plateform"""
@@ -35,36 +37,10 @@ class CreateApp(object):
 
     def update_version(self):
         """update the about.py file with the version number"""
-        command = [
-            "python",
-            "-m",
-            "gitversionbuilder",
-            "--dir",
-            ".",
-            "--lang",
-            "python",
-            "version.py"]
-        try:
-            p = subprocess.Popen(command, cwd=os.path.join(self.basepath, "code"))
-            p.wait()
-        except:
-            print("Error running" + command)
-            return False
-
-        # load the version number
-        self.softversion = 0
-        for line in fileinput.input(os.path.join(self.basepath, "code", "version.py")):
-            if line.startswith("GIT_COMMITS_SINCE_TAG"):
-                self.softversion = int(line[24:])
-
-        print("version is:", self.softversion)
-
+        my_version = createversion.GitVersion()
+        my_version.WriteToFile("../code/version.py")
+        self.m_commit_number = my_version.m_commit_number
         return True
-
-        # create about.py
-        # mi = mercurialinfo.MercurialInfo()
-        # self.softversion = mi.get_version()
-        # mi.write_about_dialog(filename=os.path.join(self.basepath, "code", "about.py"))
 
     def modify_spec_file(self):
         """modifiy the spec file before building"""
@@ -82,9 +58,9 @@ class CreateApp(object):
                 if "bundle_identifier=None)" in line:
                     print("             bundle_identifier=None,")
                     print("             info_plist={")
-                    print("                 'CFBundleShortVersionString': '1.0.{}',".format(self.softversion))
+                    print("                 'CFBundleShortVersionString': '1.0.{}',".format(self.m_commit_number))
                     print("                 'NSHumanReadableCopyright': '(c) 2020, Lucien SCHREIBER',".format(
-                        self.softversion))
+                        self.m_commit_number))
                     print("                 'NSHighResolutionCapable': 'True'")
                     print("             })")
                 else:
