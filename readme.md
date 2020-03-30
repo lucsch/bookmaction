@@ -31,6 +31,6 @@
             
 5. Create the version information using the following command
 
-        python -m gitversionbuilder --dir . --lang python version.py
+        python install/createversion.py ../code/version.py
 
 
