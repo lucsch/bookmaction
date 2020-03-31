@@ -7,5 +7,6 @@ jobs:
     - os: osx
       language: generic
 install:
-    - ./travis/install.sh
+    - chmod +x travis/install.sh
+    - travis/install.sh
 script: make test
