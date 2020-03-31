@@ -23,7 +23,6 @@
       - *wxPython*: for the user interface
       - *PyInstaller*: for  creating *.exe and *.app
       - *pytest*: for unit testing
-      - *git-version*: for getting the project version
     
         > the libraries could be installed using the following command:
     
