@@ -1,14 +1,23 @@
 language: python
-
 jobs:
   include:
-    - os: linux
-      python: 3.6
-    - os: osx
-      language: generic
+  - os: linux
+    python: 3.6
+  - os: osx
+    language: generic
 install:
-    - chmod +x travis/install.sh
-    - travis/install.sh
+- chmod +x travis/install.sh
+- travis/install.sh
 script:
-    - chmod +x travis/script.sh
-    - travis/script.sh
+- chmod +x travis/script.sh
+- travis/script.sh
+deploy:
+  provider: releases
+  api_key:
+    secure: Y7t3KLHMt177qWLx5XH8cp8pnSNH+Hdyh28/tqlmQIolS4MrtTBS4LhaMKXfIYY7bVdGUGPlxVmRpMLrzVzMeT8BHkyesvc1aD9SMOSAg8E8y1oMrP5pwF+jg+BG+QQnoOAepxcUukGmBjO9YrXolEY96N3RJT33+1jNOg49pDtyllLXccr15hoEXkz6VI+RbV2XzUP8G3T3wTG29o40+IIM75pCiZQP1bnupdsdrBC8YYMKOtkv6y4fOtYw2N9xcarmMQLRAQcKk6ympMzqBCz1agx4wBm5MdW2zXTRzC5uEXeOqKu8DnAuTTqxuIUUexiydWlyX0GptEwU5vqmvfckdn/sPid774EJKP3366/HqwN5Wvv/GRb5tiNBBF3CsuoxNrKxcbn+w17sDBVHdQ0wZhidq0BA3Z3t4ZHfA+Y7c/qf42hZxExbyS4+2c5E3bGL2fF2Bq9qAdcmIdJEdxygWfdsgT1YnDfDBKG9cGpNyXjzK2wfvZLzPMprUMVdPjjKphleu4kwbw6Tezb41n3EH9pbVX8LAdSeMcQxUc9GwPTXkUxfcKlacgzCnWIMVhd1W/8heCIMpyenuTbtbC6hHbSyRQOOZmoSIPJHU1/9dfrnwF+lODFpmYW4zwdSf12ZgIETqjo6UZr+djP1yIylj2+qfb/+T1nSYh6vEf0=
+  file_glob: true
+  file:
+      - if [ $TRAVIS_OS_NAME = 'osx' ]; then "*.dmg"; fi
+  skip_cleanup: true
+  on:
+    repo: lucsch/bookmaction
