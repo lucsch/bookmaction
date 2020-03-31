@@ -9,7 +9,7 @@ if [ $TRAVIS_OS_NAME = 'osx' ]; then
     python createapp.py OSX
     cd ..
     rm bin/dist/bookmaction
-    python createdmg.py bookmaction bin/dist
+    python install/createdmg.py bookmaction bin/dist
 else
     # run some scripts on Linux
     python createapp.py Linux
