@@ -5,7 +5,7 @@ jobs:
     - name: "Python 3.6.0 on Xenial Linux"
       os: linux
       python: 3.6
-      install:
+      before_install:
         - sudo apt-get -qq update
         - sudo apt-get install -y build-essential
         - sudo apt-get install -y libgtk-3-dev
@@ -16,7 +16,7 @@ jobs:
     - name: "Python 3.7.4 on macOS"
       os: osx
       language: generic
-      install:
+      before_install:
         - brew update
         - brew install python3
         - pip install wxPython PyInstaller
@@ -51,3 +51,5 @@ deploy:
   skip_cleanup: true
   on:
     repo: lucsch/bookmaction
+    tags: true
+  draft: true
