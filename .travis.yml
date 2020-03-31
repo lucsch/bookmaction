@@ -9,4 +9,6 @@ jobs:
 install:
     - chmod +x travis/install.sh
     - travis/install.sh
-script: make test
+script:
+    - chmod +x travis/script.sh
+    - travis/script.sh
