@@ -24,6 +24,7 @@ class BookMarkListCtrl(wx.ListCtrl):
         # bind events
         self.Bind(wx.EVT_LIST_KEY_DOWN, self.OnDeleteListItem)
         self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.OnDoubleClickItem)
+        self.Bind(wx.EVT_LIST_ITEM_RIGHT_CLICK, self.OnRightClickItem)
 
     def ClearList(self):
         self.DeleteAllItems()
@@ -78,6 +79,22 @@ class BookMarkListCtrl(wx.ListCtrl):
     def OnDoubleClickItem(self, event):
         my_data = self.GetBookMarkDataFromList(event.GetIndex())
         my_data.DoAction()
+
+    def OnRightClickItem(self, event):
+        if (self.IsValidSelectedItem() == False):
+            event.Skip()
+            return
+        id_remove = self.GetParent().m_menuBookRemove.GetId()
+        id_edit = self.GetParent().m_menuBookEdit.GetId()
+
+        m_menu_popup = wx.Menu()
+        m_menuPopupRemove = wx.MenuItem(m_menu_popup, id_remove, u"Remove" + u"\t" + u"Del", wx.EmptyString,
+                                        wx.ITEM_NORMAL)
+        m_menu_popup.Append(m_menuPopupRemove)
+        m_menuPopupEdit = wx.MenuItem(m_menu_popup, id_edit, u"Edit..." + u"\t" + u"Ctrl+E", wx.EmptyString,
+                                      wx.ITEM_NORMAL)
+        m_menu_popup.Append(m_menuPopupEdit)
+        self.PopupMenu(m_menu_popup)
 
     def OnDeleteListItem(self, event):
         if (event.GetKeyCode() != wx.WXK_DELETE or event.GetKeyCode() != wx.WXK_BACK):

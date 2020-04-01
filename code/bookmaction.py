@@ -101,7 +101,8 @@ class BAFrame(wx.Frame):
                                             wx.ITEM_NORMAL)
         self.m_menu2.Append(self.m_menuBookRemove)
 
-        self.m_menuBookEdit = wx.MenuItem(self.m_menu2, wx.ID_ANY, u"Edit...", wx.EmptyString, wx.ITEM_NORMAL)
+        self.m_menuBookEdit = wx.MenuItem(self.m_menu2, wx.ID_ANY, u"Edit..." + u"\t" + u"Ctrl+E", wx.EmptyString,
+                                          wx.ITEM_NORMAL)
         self.m_menu2.Append(self.m_menuBookEdit)
 
         self.m_menubar.Append(self.m_menu2, u"Bookmarks")
