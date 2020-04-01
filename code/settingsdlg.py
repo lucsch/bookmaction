@@ -28,16 +28,18 @@ class SettingsDlg(wx.Dialog):
 
         sbSizer3.Add(self.m_staticText1, 0, wx.ALL, 5)
 
-        bSizer4.Add(sbSizer3, 1, wx.EXPAND, 5)
+        bSizer4.Add(sbSizer3, 1, wx.EXPAND | wx.ALL, 5)
 
         sbSizer5 = wx.StaticBoxSizer(wx.StaticBox(self, wx.ID_ANY, u"Auto load document"), wx.VERTICAL)
 
         self.m_filePickerCtrl = wx.FilePickerCtrl(sbSizer5.GetStaticBox(), wx.ID_ANY, wx.EmptyString, u"Select a file",
-                                                  u"*.bmka", wx.DefaultPosition, wx.DefaultSize,
+                                                  u"*.bkma", wx.DefaultPosition, wx.DefaultSize,
                                                   wx.FLP_DEFAULT_STYLE | wx.FLP_FILE_MUST_EXIST | wx.FLP_OPEN)
+        self.m_filePickerCtrl.SetMinSize(wx.Size(400, -1))
+
         sbSizer5.Add(self.m_filePickerCtrl, 0, wx.ALL | wx.EXPAND, 5)
 
-        bSizer4.Add(sbSizer5, 0, wx.EXPAND, 5)
+        bSizer4.Add(sbSizer5, 0, wx.EXPAND | wx.ALL, 5)
 
         m_sdbSizer2 = wx.StdDialogButtonSizer()
         self.m_sdbSizer2OK = wx.Button(self, wx.ID_OK)
@@ -46,13 +48,15 @@ class SettingsDlg(wx.Dialog):
         m_sdbSizer2.AddButton(self.m_sdbSizer2Cancel)
         m_sdbSizer2.Realize();
 
-        bSizer4.Add(m_sdbSizer2, 0, wx.EXPAND, 5)
+        bSizer4.Add(m_sdbSizer2, 0, wx.EXPAND | wx.ALL, 5)
 
         self.SetSizer(bSizer4)
         self.Layout()
         bSizer4.Fit(self)
 
         self.Centre(wx.BOTH)
+
+        self.SetMinSize(wx.Size(250, 280))
 
         # Getting config
         self.m_config = wx.FileConfig("bookmaction")

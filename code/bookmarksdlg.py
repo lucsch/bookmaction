@@ -18,7 +18,7 @@ class BookMarkDlg(wx.Dialog):
 
         self.m_bookmarkCtrl = wx.TextCtrl(sbSizer1.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition,
                                           wx.Size(-1, -1), 0)
-        self.m_bookmarkCtrl.SetMinSize(wx.Size(300, -1))
+        self.m_bookmarkCtrl.SetMinSize(wx.Size(400, -1))
 
         bSizer3.Add(self.m_bookmarkCtrl, 0, wx.ALL | wx.EXPAND, 5)
 
@@ -66,6 +66,8 @@ class BookMarkDlg(wx.Dialog):
         bSizer2.Fit(self)
 
         self.Centre(wx.BOTH)
+
+        self.SetMinSize(wx.Size(250, 350))
 
         # End of the control definition
         self.__SetDialogAppearance()
