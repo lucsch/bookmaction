@@ -66,6 +66,9 @@ class BookMarkDocument():
 
     def __init__(self, ):
         """Constructor for BookMarkDocument"""
+        self.ClearDocument()
+
+    def ClearDocument(self):
         self.m_bookMarksList = []
         self.m_docName = ""
         self.m_isModified = False
@@ -82,6 +85,10 @@ class BookMarkDocument():
 
     def SetBookMarksToList(self, listctrl):
         listctrl.DeleteAllItems()
+        if (len(self.m_bookMarksList) == 0):
+            listctrl.AppendDefaultText()
+            return
+
         for bookmark in self.m_bookMarksList:
             listctrl.Append(bookmark.GetMemberAsList())
             listctrl.SetItemData(listctrl.GetItemCount() - 1, bookmark.m_id)

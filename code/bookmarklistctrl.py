@@ -18,13 +18,16 @@ class BookMarkListCtrl(wx.ListCtrl):
         self.InsertColumn(1, "BookMark", width=400)
         self.InsertColumn(2, "Description", width=200)
 
-        self.defaultColumnText = "Add BookMark to start!"
-        self.Append(["", self.defaultColumnText])
+        self.AppendDefaultText()
 
         # bind events
         self.Bind(wx.EVT_LIST_KEY_DOWN, self.OnDeleteListItem)
         self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.OnDoubleClickItem)
         self.Bind(wx.EVT_LIST_ITEM_RIGHT_CLICK, self.OnRightClickItem)
+
+    def AppendDefaultText(self):
+        self.defaultColumnText = "Add BookMark to start!"
+        self.Append(["", self.defaultColumnText])
 
     def ClearList(self):
         self.DeleteAllItems()

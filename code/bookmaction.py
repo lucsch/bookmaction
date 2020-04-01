@@ -127,6 +127,7 @@ class BAFrame(wx.Frame):
 
         self.Bind(wx.EVT_MENU, self.OnQuit, id=wx.ID_EXIT)
         self.Bind(wx.EVT_MENU, self.OnAbout, id=wx.ID_ABOUT)
+        self.Bind(wx.EVT_MENU, self.OnFileNew, id=wx.ID_NEW)
         self.Bind(wx.EVT_MENU, self.OnFileOpen, id=wx.ID_OPEN)
         self.Bind(wx.EVT_MENU, self.OnFileSave, id=wx.ID_SAVE)
         self.Bind(wx.EVT_MENU, self.OnFileSaveAs, id=wx.ID_SAVEAS)
@@ -189,6 +190,13 @@ class BAFrame(wx.Frame):
     def __SaveFile(self, filename):
         self.m_bookmarkDocument.GetBookMarksFromList(self.m_listCtrl)
         self.m_bookmarkDocument.SaveObject(filename)
+
+    def OnFileNew(self, event):
+        if (self.m_bookmarkDocument.m_isModified == True):
+            if (self.__ProjectQuestion("creating new project") == False):
+                return
+        self.m_bookmarkDocument.ClearDocument()
+        self.m_bookmarkDocument.SetBookMarksToList(self.m_listCtrl)
 
     def OnFileOpen(self, event):
         mydlg = wx.FileDialog(self, "Open Bookmaction project", wildcard="BMKA files (*.bmka)|*.bmka",
