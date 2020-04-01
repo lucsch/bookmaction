@@ -94,6 +94,20 @@ class BookMarkListCtrl(wx.ListCtrl):
         m_menuPopupEdit = wx.MenuItem(m_menu_popup, id_edit, u"Edit..." + u"\t" + u"Ctrl+E", wx.EmptyString,
                                       wx.ITEM_NORMAL)
         m_menu_popup.Append(m_menuPopupEdit)
+        m_menu_popup.AppendSeparator()
+        m_menuPopupDoOpen = wx.MenuItem(m_menu_popup, wx.ID_ANY, u"Open", wx.EmptyString, wx.ITEM_NORMAL)
+        m_menuPopupDoCopyToClipboard = wx.MenuItem(m_menu_popup, wx.ID_ANY, u"Copy to Clipboard", wx.EmptyString,
+                                                   wx.ITEM_NORMAL)
+        m_menuPopupDoWebsite = wx.MenuItem(m_menu_popup, wx.ID_ANY, u"Open in web browser", wx.EmptyString,
+                                           wx.ITEM_NORMAL)
+        m_menu_popup.Append(m_menuPopupDoOpen)
+        m_menu_popup.Append(m_menuPopupDoCopyToClipboard)
+        m_menu_popup.Append(m_menuPopupDoWebsite)
+
+        # edit and remove event are processed by the parent
+        self.Bind(wx.EVT_MENU, self.OnPopupDoOpen, id=m_menuPopupDoOpen.GetId())
+        self.Bind(wx.EVT_MENU, self.OnPopupDoCopyToClipboard, id=m_menuPopupDoCopyToClipboard.GetId())
+        self.Bind(wx.EVT_MENU, self.OnPopupDoWebsite, id=m_menuPopupDoWebsite.GetId())
         self.PopupMenu(m_menu_popup)
 
     def OnDeleteListItem(self, event):
@@ -103,3 +117,15 @@ class BookMarkListCtrl(wx.ListCtrl):
 
         self.GetParent().OnBookMarkMenuDelete(wx.CommandEvent())
         event.Skip()
+
+    def OnPopupDoOpen(self, event):
+        my_data = self.GetBookMarkDataFromList(self.GetFirstSelected())
+        my_data.DoActionOpen()
+
+    def OnPopupDoCopyToClipboard(self, event):
+        my_data = self.GetBookMarkDataFromList(self.GetFirstSelected())
+        my_data.DoActionCopyToClipboard()
+
+    def OnPopupDoWebsite(self, event):
+        my_data = self.GetBookMarkDataFromList(self.GetFirstSelected())
+        my_data.DoActionOpenWebsite()
