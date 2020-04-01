@@ -22,7 +22,6 @@ class BookMarkListCtrl(wx.ListCtrl):
         self.Append(["", self.defaultColumnText])
 
         # bind events
-        # self.Bind(wx.EVT_LIST_DELETE_ITEM, self.OnDeleteListItem)
         self.Bind(wx.EVT_LIST_KEY_DOWN, self.OnDeleteListItem)
         self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.OnDoubleClickItem)
 
@@ -42,7 +41,7 @@ class BookMarkListCtrl(wx.ListCtrl):
         self.SetItemData(self.GetItemCount() - 1, bookmark.m_id)
 
     def BookMarkEdit(self, bookmark, index):
-        self.SetColumnText(index, 0, bookmark.GetBookMarkActionToText())
+        self.SetColumnText(index, 0, bookmark.m_action_list[bookmark.m_action_index])
         self.SetColumnText(index, 1, bookmark.m_path)
         self.SetColumnText(index, 2, bookmark.m_description)
 
@@ -61,7 +60,7 @@ class BookMarkListCtrl(wx.ListCtrl):
     def GetBookMarkDataFromList(self, index):
         my_data = bookmarks.BookMark()
         my_data.m_id = self.GetItemData(index)
-        my_data.SetBookMarkActionFromText(self.GetItemText(index, col=0))
+        my_data.m_action_index = my_data.m_action_list.index(self.GetItemText(index, col=0))
         my_data.m_path = self.GetItemText(index, col=1)
         my_data.m_description = self.GetItemText(index, col=2)
         return my_data

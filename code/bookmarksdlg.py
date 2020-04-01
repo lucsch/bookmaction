@@ -36,7 +36,7 @@ class BookMarkDlg(wx.Dialog):
 
         sbSizer1.Add(bSizer3, 0, wx.EXPAND, 5)
 
-        bSizer2.Add(sbSizer1, 0, wx.EXPAND, 5)
+        bSizer2.Add(sbSizer1, 0, wx.EXPAND | wx.ALL, 5)
 
         sbSizer4 = wx.StaticBoxSizer(wx.StaticBox(self, wx.ID_ANY, u"Description"), wx.VERTICAL)
 
@@ -44,20 +44,13 @@ class BookMarkDlg(wx.Dialog):
                                              wx.Size(300, 100), 0)
         sbSizer4.Add(self.m_descriptionCtrl, 1, wx.ALL | wx.EXPAND, 5)
 
-        bSizer2.Add(sbSizer4, 1, wx.EXPAND, 5)
+        bSizer2.Add(sbSizer4, 1, wx.EXPAND | wx.ALL, 5)
 
-        sbSizer2 = wx.StaticBoxSizer(wx.StaticBox(self, wx.ID_ANY, u"Action when double-clicked"), wx.VERTICAL)
-
-        self.m_radioBtn1 = wx.RadioButton(sbSizer2.GetStaticBox(), wx.ID_ANY, u"Open folder", wx.DefaultPosition,
-                                          wx.DefaultSize, wx.RB_GROUP)
-        self.m_radioBtn1.SetValue(True)
-        sbSizer2.Add(self.m_radioBtn1, 0, wx.ALL, 5)
-
-        self.m_radioBtn2 = wx.RadioButton(sbSizer2.GetStaticBox(), wx.ID_ANY, u"Copy to clipboard", wx.DefaultPosition,
-                                          wx.DefaultSize, 0)
-        sbSizer2.Add(self.m_radioBtn2, 0, wx.ALL, 5)
-
-        bSizer2.Add(sbSizer2, 0, wx.EXPAND, 5)
+        m_actionCtrlChoices = [u"Open", u"Copy to clipboard", u"Website"]
+        self.m_actionCtrl = wx.RadioBox(self, wx.ID_ANY, u"Action", wx.DefaultPosition, wx.DefaultSize,
+                                        m_actionCtrlChoices, 1, wx.RA_SPECIFY_COLS)
+        self.m_actionCtrl.SetSelection(2)
+        bSizer2.Add(self.m_actionCtrl, 0, wx.ALL | wx.EXPAND, 5)
 
         m_sdbSizer1 = wx.StdDialogButtonSizer()
         self.m_sdbSizer1OK = wx.Button(self, wx.ID_OK)
@@ -66,7 +59,7 @@ class BookMarkDlg(wx.Dialog):
         m_sdbSizer1.AddButton(self.m_sdbSizer1Cancel)
         m_sdbSizer1.Realize();
 
-        bSizer2.Add(m_sdbSizer1, 0, wx.EXPAND, 5)
+        bSizer2.Add(m_sdbSizer1, 0, wx.EXPAND | wx.ALL, 5)
 
         self.SetSizer(bSizer2)
         self.Layout()
@@ -88,25 +81,20 @@ class BookMarkDlg(wx.Dialog):
     def TransferDataFromWindow(self):
         self.m_BookMarkData.m_path = self.m_bookmarkCtrl.GetValue()
         self.m_BookMarkData.m_description = self.m_descriptionCtrl.GetValue()
-        self.m_BookMarkData.m_action = bookmarks.BookMarkAction.OPEN
-        if (self.m_radioBtn2.GetValue() == True):
-            self.m_BookMarkData.m_action = bookmarks.BookMarkAction.COPY_TO_CLIPBOARD
+        self.m_BookMarkData.m_action_index = self.m_actionCtrl.GetSelection()
         return True
 
     def TransferDataToWindow(self):
         self.m_bookmarkCtrl.SetValue(self.m_BookMarkData.m_path)
         self.m_descriptionCtrl.SetValue(self.m_BookMarkData.m_description)
-
-        if (self.m_BookMarkData.m_action == bookmarks.BookMarkAction.COPY_TO_CLIPBOARD):
-            # self.m_radioBtn1.SetValue(False)
-            self.m_radioBtn2.SetValue(True)
+        self.m_actionCtrl.SetSelection(self.m_BookMarkData.m_action_index)
         return True
 
     def __SetDialogAppearance(self):
         self.m_config = wx.FileConfig("bookmaction")
         myAppearance = self.m_config.ReadInt("Appearance", 0)
         if (myAppearance == 0):  # light mode
-            pass  # do nothing for da
+            pass  # do nothing for light mode
             # self.SetBackgroundColour(wx.Colour(236,236,236))
             # self.SetForegroundColour(wx.BLACK)
         else:

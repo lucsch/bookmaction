@@ -3,13 +3,7 @@ import platform
 import subprocess
 import wx
 import pickle
-from enum import Enum
 import bookmarksdlg
-
-
-class BookMarkAction(Enum):
-    OPEN = 0
-    COPY_TO_CLIPBOARD = 1
 
 
 ##########################################################
@@ -23,38 +17,37 @@ class BookMark():
         self.m_id = wx.NewIdRef()
         self.m_path = ""
         self.m_description = ""
-        self.m_action = BookMarkAction.OPEN
+        self.m_action_index = 0
+        self.m_action_list = ["Open", "Copy to Clipboard", "Website"]
 
     def GetMemberAsList(self):
         myList = []
-        myList.append(self.GetBookMarkActionToText())
+        myList.append(self.m_action_list[self.m_action_index])
         myList.append(self.m_path)
         myList.append(self.m_description)
         return myList
 
-    def GetBookMarkActionToText(self):
-        myActionTxt = "Open"
-        if (self.m_action == BookMarkAction.COPY_TO_CLIPBOARD):
-            myActionTxt = "Copy to Clipboard"
-        return myActionTxt
-
-    def SetBookMarkActionFromText(self, text):
-        self.m_action = BookMarkAction.COPY_TO_CLIPBOARD
-        if (text == "Open"):
-            self.m_action = BookMarkAction.OPEN
-
     def DoAction(self):
-        if (self.m_action == BookMarkAction.COPY_TO_CLIPBOARD):
-            if (wx.TheClipboard.Open()):
-                wx.TheClipboard.SetData(wx.TextDataObject(self.m_path))
-                wx.TheClipboard.Close()
-        elif (self.m_action == BookMarkAction.OPEN):
+        if (self.m_action_index == 0):  # Open
+            # check if the path exist
+            if (os.path.exists(self.m_path) == False):
+                wx.LogError("The path '{}' didn't exist".format(self.m_path))
+                return
             if platform.system() == "Windows":
                 os.startfile(self.m_path)
             elif platform.system() == "Darwin":
                 subprocess.Popen(["open", self.m_path])
             else:
                 subprocess.Popen(["xdg-open", self.m_path])
+        elif (self.m_action_index == 1):  # Copy to clipboard
+            if (wx.TheClipboard.Open()):
+                wx.TheClipboard.SetData(wx.TextDataObject(self.m_path))
+                wx.TheClipboard.Close()
+
+        elif (self.m_action_index == 2):  # website
+            wx.LaunchDefaultBrowser(self.m_path)
+        else:
+            wx.LogError("This action isn't supported (for now)!")
 
 
 ##########################################################
@@ -96,11 +89,7 @@ class BookMarkDocument():
         if (dlg.ShowModal() != wx.ID_OK):
             return False
 
-        my_bookmark = BookMark()
-        if (dlg.m_radioBtn2.GetValue() == True):
-            my_bookmark.m_action = BookMarkAction.COPY_TO_CLIPBOARD
-        my_bookmark.m_path = dlg.m_bookmarkCtrl.GetValue()
-        my_bookmark.m_description = dlg.m_descriptionCtrl.GetValue()
+        my_bookmark = dlg.m_BookMarkData
         self.m_bookMarksList.append(my_bookmark)
         listctrl.BookMarkAdd(my_bookmark)
         self.m_isModified = True
