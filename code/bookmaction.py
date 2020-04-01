@@ -209,6 +209,7 @@ class BAFrame(wx.Frame):
         self.m_bookmarkDocument.SetBookMarksToList(self.m_listCtrl)
 
     def OnUpdateIdle(self, event):
+        # set document name
         mydocname = self.m_bookmarkDocument.m_docName
         mytitletext = ""
         if (mydocname == ""):
@@ -220,6 +221,11 @@ class BAFrame(wx.Frame):
             mytitletext = mytitletext + "*"
 
         self.SetTitle(mytitletext)
+
+        # compute the number of items in the list
+        my_text = "{} selected / {} total items".format(self.m_listCtrl.GetCountSelected(),
+                                                        self.m_listCtrl.GetCountItem())
+        self.GetStatusBar().SetStatusText(my_text, 0)
 
     def OnClose(self, event):
         if (event.CanVeto() and self.m_bookmarkDocument.m_isModified == True):
