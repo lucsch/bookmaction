@@ -29,25 +29,33 @@ class BookMark():
 
     def DoAction(self):
         if (self.m_action_index == 0):  # Open
-            # check if the path exist
-            if (os.path.exists(self.m_path) == False):
-                wx.LogError("The path '{}' didn't exist".format(self.m_path))
-                return
-            if platform.system() == "Windows":
-                os.startfile(self.m_path)
-            elif platform.system() == "Darwin":
-                subprocess.Popen(["open", self.m_path])
-            else:
-                subprocess.Popen(["xdg-open", self.m_path])
+            self.DoActionOpen()
         elif (self.m_action_index == 1):  # Copy to clipboard
-            if (wx.TheClipboard.Open()):
-                wx.TheClipboard.SetData(wx.TextDataObject(self.m_path))
-                wx.TheClipboard.Close()
-
+            self.DoActionCopyToClipboard()
         elif (self.m_action_index == 2):  # website
-            wx.LaunchDefaultBrowser(self.m_path)
+            self.DoActionOpenWebsite()
         else:
             wx.LogError("This action isn't supported (for now)!")
+
+    def DoActionOpen(self):
+        # check if the path exist
+        if (os.path.exists(self.m_path) == False):
+            wx.LogError("The path '{}' didn't exist".format(self.m_path))
+            return
+        if platform.system() == "Windows":
+            os.startfile(self.m_path)
+        elif platform.system() == "Darwin":
+            subprocess.Popen(["open", self.m_path])
+        else:
+            subprocess.Popen(["xdg-open", self.m_path])
+
+    def DoActionCopyToClipboard(self):
+        if (wx.TheClipboard.Open()):
+            wx.TheClipboard.SetData(wx.TextDataObject(self.m_path))
+            wx.TheClipboard.Close()
+
+    def DoActionOpenWebsite(self):
+        wx.LaunchDefaultBrowser(self.m_path)
 
 
 ##########################################################
