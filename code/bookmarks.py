@@ -2,7 +2,7 @@ import os
 import platform
 import subprocess
 import wx
-import pickle
+import json
 import bookmarksdlg
 
 
@@ -26,6 +26,11 @@ class BookMark():
         myList.append(self.m_path)
         myList.append(self.m_description)
         return myList
+
+    def LoadMemberFromList(self, list):
+        self.m_action_index = self.m_action_list.index(list[0])
+        self.m_path = list[1]
+        self.m_description = list[2]
 
     def DoAction(self):
         if (self.m_action_index == 0):  # Open
@@ -72,14 +77,51 @@ class BookMarkDocument():
         self.m_bookMarksList = []
         self.m_docName = ""
         self.m_isModified = False
+        self.m_data_version = 1
 
     def SaveObject(self, outputstream):
-        pickle.dump(self.m_bookMarksList, open(outputstream, "wb"))
+        my_data = {'bookmaction_data_version': self.m_data_version}
+        for index, bookmark in enumerate(self.m_bookMarksList):
+            my_list = bookmark.GetMemberAsList()
+            my_data[str(index)] = my_list
+        with open(outputstream, 'w') as f:
+            json.dump(my_data, f, indent=4, sort_keys=True, separators=(',', ': '), ensure_ascii=False)
         self.m_docName = outputstream
         self.m_isModified = False
 
     def LoadObject(self, inputstream):
-        self.m_bookMarksList = pickle.load(open(inputstream, "rb"))
+        my_data = {}
+        with open(inputstream) as f:
+            try:
+                my_data = json.load(f)
+            except:
+                wx.LogError("Error loading {}! File may be corrupted!".format(inputstream))
+                return False
+
+        # check file version
+        if ('bookmaction_data_verison'in my_data == False):
+            wx.LogError("This isn't a Bookmaction file!")
+            return False
+
+        if (my_data['bookmaction_data_version'] > self.m_data_version):
+            wx.LogError("This file was created with a newer version. Please download the latest version!")
+            return False
+
+        # clear
+        self.ClearDocument()
+
+        # load data
+        index = 0
+        while True:
+            str_index = str(index)
+            if (str_index in my_data) == False:
+                break
+
+            my_list = my_data[str_index]
+            my_bookmark = BookMark()
+            my_bookmark.LoadMemberFromList(my_list)
+            self.m_bookMarksList.append(my_bookmark)
+            index += 1
         self.m_docName = inputstream
         self.m_isModified = False
 
