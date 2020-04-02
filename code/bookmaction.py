@@ -33,6 +33,7 @@ class BAFrame(wx.Frame):
         self.__CreateControls()
         self.__CreateMenus()
         self.__CreateStatusAndVersion()
+        self.__ConnectEvents()
 
         self.m_bookmarkDocument = BookMarkDocument()
 
@@ -42,6 +43,9 @@ class BAFrame(wx.Frame):
         self.SetSize([900, 600])
         self.Layout()
         self.Centre(wx.BOTH)
+
+        # End of the control definition
+        self.__SetDialogAppearance()
 
         # autoload project if needed
         self.m_config = wx.FileConfig("bookmaction")
@@ -55,10 +59,45 @@ class BAFrame(wx.Frame):
 
         bSizer1 = wx.BoxSizer(wx.VERTICAL)
 
-        self.m_listCtrl = BookMarkListCtrl(self)
-        bSizer1.Add(self.m_listCtrl, 1, wx.ALL | wx.EXPAND, 0)
+        self.m_panel1 = wx.Panel(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL)
+        bSizer6 = wx.BoxSizer(wx.VERTICAL)
+
+        self.m_listCtrl = BookMarkListCtrl(self.m_panel1)
+        bSizer6.Add(self.m_listCtrl, 1, wx.EXPAND, 5)
+
+        bSizer7 = wx.BoxSizer(wx.HORIZONTAL)
+
+        self.m_searchCtrl = wx.SearchCtrl(self.m_panel1, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition,
+                                          wx.Size(250, -1), 0)
+        self.m_searchCtrl.ShowSearchButton(True)
+        self.m_searchCtrl.ShowCancelButton(True)
+        bSizer7.Add(self.m_searchCtrl, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALL, 5)
+
+        bSizer6.Add(bSizer7, 0, wx.ALIGN_RIGHT, 5)
+
+        self.m_panel1.SetSizer(bSizer6)
+        self.m_panel1.Layout()
+        bSizer6.Fit(self.m_panel1)
+        bSizer1.Add(self.m_panel1, 1, wx.EXPAND, 5)
 
         self.SetSizer(bSizer1)
+
+        # create menu for SearchCtrl
+        self.m_searchMenu = wx.Menu()
+        self.m_menu_search_action = self.m_searchMenu.AppendRadioItem(wx.ID_ANY, "Action")
+        self.m_menu_search_bookmarks = self.m_searchMenu.AppendRadioItem(wx.ID_ANY, "BookMarks")
+        self.m_menu_search_description = self.m_searchMenu.AppendRadioItem(wx.ID_ANY, "Description")
+        self.m_searchCtrl.SetMenu(self.m_searchMenu)
+
+    def __SetDialogAppearance(self):
+        self.m_config = wx.FileConfig("bookmaction")
+        myAppearance = self.m_config.ReadInt("Appearance", 0)
+        if (myAppearance == 0):  # light mode
+            pass  # do nothing for light mode
+            # self.SetBackgroundColour(wx.Colour(236,236,236))
+            # self.SetForegroundColour(wx.BLACK)
+        else:
+            self.SetBackgroundColour(wx.Colour(45, 45, 45))
 
     def __CreateMenus(self):
         # menubar
@@ -118,6 +157,8 @@ class BAFrame(wx.Frame):
 
         self.SetMenuBar(self.m_menubar)
 
+
+    def __ConnectEvents(self):
         # connect events
         self.Bind(wx.EVT_MENU, self.OnWebSite, id=self.m_menuWebsite.GetId())
         self.Bind(wx.EVT_MENU, self.OnBookMarkMenuAdd, id=self.m_menuBookAdd.GetId())
@@ -134,6 +175,11 @@ class BAFrame(wx.Frame):
 
         self.Bind(wx.EVT_IDLE, self.OnUpdateIdle)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
+
+        self.m_searchCtrl.Bind(wx.EVT_SEARCHCTRL_SEARCH_BTN, self.OnSearchButton)
+
+    def OnSearchButton(self, event):
+        wx.LogMessage("Hello")
 
     def __CreateStatusAndVersion(self):
         self.CreateStatusBar(2)
