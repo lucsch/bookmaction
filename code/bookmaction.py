@@ -76,7 +76,7 @@ class BAFrame(wx.Frame):
         bSizer7 = wx.BoxSizer(wx.HORIZONTAL)
 
         self.m_searchCtrl = wx.SearchCtrl(self.m_panel1, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition,
-                                          wx.Size(250, -1), 0)
+                                          wx.Size(250, -1), style=wx.TE_PROCESS_ENTER)
         self.m_searchCtrl.ShowSearchButton(True)
         self.m_searchCtrl.ShowCancelButton(True)
         bSizer7.Add(self.m_searchCtrl, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALL, 5)
@@ -199,6 +199,7 @@ class BAFrame(wx.Frame):
 
         self.m_searchCtrl.Bind(wx.EVT_SEARCHCTRL_CANCEL_BTN, self.OnSearch)
         self.m_searchCtrl.Bind(wx.EVT_SEARCHCTRL_SEARCH_BTN, self.OnSearch)
+        self.m_searchCtrl.Bind(wx.EVT_TEXT_ENTER, self.OnSearch)
 
     def OnSearch(self, event):
         column = 0  # action column
