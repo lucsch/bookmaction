@@ -124,6 +124,7 @@ class BookMarkDocument():
             index += 1
         self.m_docName = inputstream
         self.m_isModified = False
+        return True
 
     def SetBookMarksToList(self, listctrl, filtertext="", filtercolumn=1):
         listctrl.DeleteAllItems()

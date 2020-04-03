@@ -57,6 +57,9 @@ class BAFrame(wx.Frame):
         myfile = self.m_config.Read("AutoLoadFile", "")
         self.__OpenFile(myfile)
 
+        # populate menu file history
+        self.m_fileHistoryMenu.Load(self.m_config)
+
     def __CreateControls(self):
         icon = wx.Icon()
         icon.CopyFromBitmap(bitmaps.bookmaction.GetBitmap())
@@ -106,6 +109,8 @@ class BAFrame(wx.Frame):
             self.SetBackgroundColour(wx.Colour(45, 45, 45))
 
     def __CreateMenus(self):
+        self.m_fileHistoryMenu = wx.FileHistory(maxFiles=5, idBase=wx.ID_FILE1)
+
         # menubar
         self.m_menubar = wx.MenuBar(0)
         self.m_menu1 = wx.Menu()
@@ -123,6 +128,13 @@ class BAFrame(wx.Frame):
 
         self.m_menuSaveAs = wx.MenuItem(self.m_menu1, wx.ID_SAVEAS, u"Save as...", wx.EmptyString, wx.ITEM_NORMAL)
         self.m_menu1.Append(self.m_menuSaveAs)
+
+        self.m_menu1.AppendSeparator()
+
+        self.subMenu = wx.Menu()
+        self.m_fileHistoryMenu.UseMenu(self.subMenu)
+        self.m_fileHistoryMenu.AddFilesToMenu()
+        self.m_menu1.AppendSubMenu(self.subMenu, "Recent Files...")
 
         self.m_menu1.AppendSeparator()
 
@@ -163,7 +175,6 @@ class BAFrame(wx.Frame):
 
         self.SetMenuBar(self.m_menubar)
 
-
     def __ConnectEvents(self):
         # connect events
         self.Bind(wx.EVT_MENU, self.OnWebSite, id=self.m_menuWebsite.GetId())
@@ -186,7 +197,7 @@ class BAFrame(wx.Frame):
         self.m_searchCtrl.Bind(wx.EVT_SEARCHCTRL_SEARCH_BTN, self.OnSearch)
 
     def OnSearch(self, event):
-        column = 0 # action column
+        column = 0  # action column
         if (self.m_searchMenu.IsChecked(self.ID_SEARCH_BOOKMARK)):
             column = 1
         elif (self.m_searchMenu.IsChecked(self.ID_SEARCH_DESCRIPTION)):
@@ -267,13 +278,17 @@ class BAFrame(wx.Frame):
 
     def __OpenFile(self, filename):
         if (filename == ""):
-            return
+            return False
 
         if (os.path.exists(filename) == False):
             wx.LogError("The file : {} didn't exists".format(filename))
-            return
+            return False
 
-        self.m_bookmarkDocument.LoadObject(filename)
+        if(self.m_bookmarkDocument.LoadObject(filename) == True):
+            self.m_fileHistoryMenu.AddFileToHistory(filename)
+        else:
+            # self.fileHistoryMenu.RemoveFileFromHistory(filename)
+            pass
         self.m_bookmarkDocument.SetBookMarksToList(self.m_listCtrl)
 
     def OnUpdateIdle(self, event):
@@ -292,7 +307,7 @@ class BAFrame(wx.Frame):
 
         # compute the number of items in the list
         my_text = "{} visible / {} total items".format(self.m_listCtrl.GetCountVisible(),
-                                                        len(self.m_bookmarkDocument.m_bookMarksList))
+                                                       len(self.m_bookmarkDocument.m_bookMarksList))
         self.GetStatusBar().SetStatusText(my_text, 0)
 
     def OnClose(self, event):
@@ -300,6 +315,7 @@ class BAFrame(wx.Frame):
             if (self.__ProjectQuestion("closing") == False):
                 event.Veto()
                 return
+        self.m_fileHistoryMenu.Save(self.m_config)
         event.Skip()
 
     def __ProjectQuestion(self, text):
