@@ -1,4 +1,6 @@
-# BOOKMACTION
+[![Build Status](https://travis-ci.org/lucsch/bookmaction.svg?branch=master)](https://travis-ci.org/lucsch/bookmaction)
+
+# Bookmaction
 
 ## Install from source
 
@@ -31,5 +33,9 @@
 5. Create the version information using the following command
 
         python install/createversion.py ../code/version.py
+
+6. Run the program
+
+        python code/bookmaction.py
 
 
