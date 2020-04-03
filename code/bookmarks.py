@@ -191,11 +191,11 @@ class BookMarkDocument():
 
     def __HasBookMarkText(self, searchtext, bookmark, column=1):
         if (column == 1):  # Path
-            return searchtext in bookmark.m_path
+            return searchtext.lower() in bookmark.m_path.lower()
         elif (column == 2):  # Description
-            return searchtext in bookmark.m_description
+            return searchtext.lower() in bookmark.m_description.lower()
         elif (column == 0):
-            return searchtext in bookmark.m_action_list[bookmark.m_action_index]
+            return searchtext.lower() in bookmark.m_action_list[bookmark.m_action_index].lower()
         else:
             wx.LogError("This column number isn't supported!")
         return False

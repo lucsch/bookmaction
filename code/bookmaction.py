@@ -92,6 +92,7 @@ class BAFrame(wx.Frame):
         self.m_searchMenu.AppendRadioItem(self.ID_SEARCH_ACTION, "Action")
         self.m_searchMenu.AppendRadioItem(self.ID_SEARCH_BOOKMARK, "BookMarks")
         self.m_searchMenu.AppendRadioItem(self.ID_SEARCH_DESCRIPTION, "Description")
+        self.m_searchMenu.Check(self.ID_SEARCH_BOOKMARK, True)
         self.m_searchCtrl.SetMenu(self.m_searchMenu)
 
     def __SetDialogAppearance(self):
