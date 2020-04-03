@@ -193,6 +193,10 @@ class BAFrame(wx.Frame):
         self.Bind(wx.EVT_IDLE, self.OnUpdateIdle)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
 
+        my_history_list = [wx.ID_FILE1, wx.ID_FILE2, wx.ID_FILE3, wx.ID_FILE4, wx.ID_FILE5]
+        for item in my_history_list:
+            self.Bind(wx.EVT_MENU, self.OnFileOpenHistory, id=item)
+
         self.m_searchCtrl.Bind(wx.EVT_SEARCHCTRL_CANCEL_BTN, self.OnSearch)
         self.m_searchCtrl.Bind(wx.EVT_SEARCHCTRL_SEARCH_BTN, self.OnSearch)
 
@@ -276,20 +280,32 @@ class BAFrame(wx.Frame):
 
         self.__OpenFile(mydlg.GetPath())
 
+    def OnFileOpenHistory(self, event):
+        my_menu_id = [wx.ID_FILE1, wx.ID_FILE2, wx.ID_FILE3, wx.ID_FILE4, wx.ID_FILE5].index(event.GetId())
+        self.__OpenFile(self.m_fileHistoryMenu.GetHistoryFile(my_menu_id))
+
     def __OpenFile(self, filename):
         if (filename == ""):
             return False
 
         if (os.path.exists(filename) == False):
             wx.LogError("The file : {} didn't exists".format(filename))
+            self.__RemoveFileFromHistory(filename)
             return False
 
-        if(self.m_bookmarkDocument.LoadObject(filename) == True):
+        if (self.m_bookmarkDocument.LoadObject(filename) == True):
             self.m_fileHistoryMenu.AddFileToHistory(filename)
         else:
-            # self.fileHistoryMenu.RemoveFileFromHistory(filename)
+            self.__RemoveFileFromHistory(filename)
             pass
         self.m_bookmarkDocument.SetBookMarksToList(self.m_listCtrl)
+
+    def __RemoveFileFromHistory(self, filename):
+        for index in range(self.m_fileHistoryMenu.GetCount()):
+            my_file = self.m_fileHistoryMenu.GetHistoryFile(index)
+            if (filename == my_file):
+                self.m_fileHistoryMenu.RemoveFileFromHistory(index)
+                return
 
     def OnUpdateIdle(self, event):
         # set document name
