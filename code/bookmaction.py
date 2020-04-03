@@ -29,6 +29,11 @@ class BAFrame(wx.Frame):
             size=wx.DefaultSize,
             style=wx.DEFAULT_FRAME_STYLE | wx.TAB_TRAVERSAL)
 
+        # id
+        self.ID_SEARCH_ACTION = wx.Window.NewControlId()
+        self.ID_SEARCH_BOOKMARK = wx.Window.NewControlId()
+        self.ID_SEARCH_DESCRIPTION = wx.Window.NewControlId()
+
         self.m_title = self.GetTitle()
         self.__CreateControls()
         self.__CreateMenus()
@@ -84,9 +89,9 @@ class BAFrame(wx.Frame):
 
         # create menu for SearchCtrl
         self.m_searchMenu = wx.Menu()
-        self.m_menu_search_action = self.m_searchMenu.AppendRadioItem(wx.ID_ANY, "Action")
-        self.m_menu_search_bookmarks = self.m_searchMenu.AppendRadioItem(wx.ID_ANY, "BookMarks")
-        self.m_menu_search_description = self.m_searchMenu.AppendRadioItem(wx.ID_ANY, "Description")
+        self.m_searchMenu.AppendRadioItem(self.ID_SEARCH_ACTION, "Action")
+        self.m_searchMenu.AppendRadioItem(self.ID_SEARCH_BOOKMARK, "BookMarks")
+        self.m_searchMenu.AppendRadioItem(self.ID_SEARCH_DESCRIPTION, "Description")
         self.m_searchCtrl.SetMenu(self.m_searchMenu)
 
     def __SetDialogAppearance(self):
@@ -176,10 +181,17 @@ class BAFrame(wx.Frame):
         self.Bind(wx.EVT_IDLE, self.OnUpdateIdle)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
 
-        self.m_searchCtrl.Bind(wx.EVT_SEARCHCTRL_SEARCH_BTN, self.OnSearchButton)
+        self.m_searchCtrl.Bind(wx.EVT_SEARCHCTRL_CANCEL_BTN, self.OnSearch)
+        self.m_searchCtrl.Bind(wx.EVT_SEARCHCTRL_SEARCH_BTN, self.OnSearch)
 
-    def OnSearchButton(self, event):
-        wx.LogMessage("Hello")
+    def OnSearch(self, event):
+        column = 0 # action column
+        if (self.m_searchMenu.IsChecked(self.ID_SEARCH_BOOKMARK)):
+            column = 1
+        elif (self.m_searchMenu.IsChecked(self.ID_SEARCH_DESCRIPTION)):
+            column = 2
+        self.m_bookmarkDocument.SetBookMarksToList(self.m_listCtrl, filtertext=event.GetString(), filtercolumn=column)
+        event.Skip()
 
     def __CreateStatusAndVersion(self):
         self.CreateStatusBar(2)
@@ -278,8 +290,8 @@ class BAFrame(wx.Frame):
         self.SetTitle(mytitletext)
 
         # compute the number of items in the list
-        my_text = "{} selected / {} total items".format(self.m_listCtrl.GetCountSelected(),
-                                                        self.m_listCtrl.GetCountItem())
+        my_text = "{} visible / {} total items".format(self.m_listCtrl.GetCountVisible(),
+                                                        len(self.m_bookmarkDocument.m_bookMarksList))
         self.GetStatusBar().SetStatusText(my_text, 0)
 
     def OnClose(self, event):

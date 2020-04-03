@@ -61,15 +61,13 @@ class BookMarkListCtrl(wx.ListCtrl):
             return False
         return True
 
-    def GetCountItem(self):
-        if (self.GetItemText(0, col=1) == self.defaultColumnText):
+    def GetCountVisible(self):
+        my_count = self.GetItemCount()
+        if (my_count == 0):
+            return 0
+        elif (my_count == 1 and self.GetItemText(0, col=1) == self.defaultColumnText):
             return 0
         return self.GetItemCount()
-
-    def GetCountSelected(self):
-        if (self.GetCountItem() == 0):
-            return 0
-        return self.GetSelectedItemCount()
 
     def GetBookMarkDataFromList(self, index):
         my_data = bookmarks.BookMark()

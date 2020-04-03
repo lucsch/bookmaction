@@ -99,7 +99,7 @@ class BookMarkDocument():
                 return False
 
         # check file version
-        if ('bookmaction_data_verison'in my_data == False):
+        if ('bookmaction_data_verison' in my_data == False):
             wx.LogError("This isn't a Bookmaction file!")
             return False
 
@@ -125,15 +125,23 @@ class BookMarkDocument():
         self.m_docName = inputstream
         self.m_isModified = False
 
-    def SetBookMarksToList(self, listctrl):
+    def SetBookMarksToList(self, listctrl, filtertext="", filtercolumn=1):
         listctrl.DeleteAllItems()
         if (len(self.m_bookMarksList) == 0):
             listctrl.AppendDefaultText()
             return
 
+        if (filtertext == ""):
+            for bookmark in self.m_bookMarksList:
+                listctrl.Append(bookmark.GetMemberAsList())
+                listctrl.SetItemData(listctrl.GetItemCount() - 1, bookmark.m_id)
+            return
+
+        # support list filtering
         for bookmark in self.m_bookMarksList:
-            listctrl.Append(bookmark.GetMemberAsList())
-            listctrl.SetItemData(listctrl.GetItemCount() - 1, bookmark.m_id)
+            if (self.__HasBookMarkText(filtertext, bookmark, filtercolumn) == True):
+                listctrl.Append(bookmark.GetMemberAsList())
+                listctrl.SetItemData(listctrl.GetItemCount() - 1, bookmark.m_id)
 
     def GetBookMarksFromList(self, listctrl):
         self.m_bookMarksList.clear()
@@ -180,3 +188,14 @@ class BookMarkDocument():
         self.m_bookMarksList.pop(my_index)
         listctrl.DeleteItem(listctrl.GetFirstSelected())
         self.m_isModified = True
+
+    def __HasBookMarkText(self, searchtext, bookmark, column=1):
+        if (column == 1):  # Path
+            return searchtext in bookmark.m_path
+        elif (column == 2):  # Description
+            return searchtext in bookmark.m_description
+        elif (column == 0):
+            return searchtext in bookmark.m_action_list[bookmark.m_action_index]
+        else:
+            wx.LogError("This column number isn't supported!")
+        return False
