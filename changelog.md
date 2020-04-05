@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- A new about dialog
+
 ## [1.0.0] - 2020-04-03
 ### Added
 - Search control in the main frame

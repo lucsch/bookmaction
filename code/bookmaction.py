@@ -111,7 +111,7 @@ class BAFrame(wx.Frame):
             # self.SetForegroundColour(wx.BLACK)
         else:
             self.SetBackgroundColour(wx.Colour(45, 45, 45))
-            self.m_searchCtrl.SetForegroundColour(wx.Colour(221,221,221))
+            self.m_searchCtrl.SetForegroundColour(wx.Colour(221, 221, 221))
 
     def __CreateMenus(self):
         self.m_fileHistoryMenu = wx.FileHistory(maxFiles=5, idBase=wx.ID_FILE1)
@@ -234,13 +234,6 @@ class BAFrame(wx.Frame):
     def OnAbout(self, event):
         my_dlg = AboutDlg(self, self.m_title)
         my_dlg.ShowModal()
-        # info = wx.adv.AboutDialogInfo()
-        # info.Name = self.Title
-        # info.Version = self.__GetGitVersion()
-        # info.Icon = self.GetIcon()
-        # info.Developers = ["Lucien SCHREIBER"]
-        # info.Description = """Bookmarks manager with actions"""
-        # wx.adv.AboutBox(info)
 
     def OnBookMarkMenuAdd(self, event):
         self.m_bookmarkDocument.BookMarkAdd(self.m_listCtrl)

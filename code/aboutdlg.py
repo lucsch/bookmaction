@@ -19,7 +19,8 @@ class AboutDlg(wx.Dialog):
         self.m_staticText2 = wx.StaticText(self, wx.ID_ANY, programname, wx.DefaultPosition, wx.DefaultSize, 0)
         bSizer8.Add(self.m_staticText2, 0, wx.ALL | wx.ALIGN_CENTER_HORIZONTAL, 5)
 
-        self.m_textCtrl3 = wx.TextCtrl(self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size(250, 100), 0)
+        self.m_textCtrl3 = wx.TextCtrl(self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size(250, 100),
+                                       wx.TE_MULTILINE)
         bSizer8.Add(self.m_textCtrl3, 1, wx.EXPAND | wx.ALL, 5)
 
         self.m_staticText3 = wx.StaticText(self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize)
@@ -52,7 +53,7 @@ class AboutDlg(wx.Dialog):
         # set copyright for the current year
         my_year = wx.DateTime.Now().GetCurrentYear()
         self.m_staticText3.SetLabel("(c) Lucien SCHREIBER, " + str(my_year))
-        my_font.SetPointSize(my_font.GetPointSize() - 6)
+        my_font.SetPointSize(my_font.GetPointSize() - 5)
         self.m_staticText3.SetFont(my_font)
 
         # set version number
@@ -77,9 +78,9 @@ class AboutDlg(wx.Dialog):
             # self.SetForegroundColour(wx.BLACK)
         else:
             self.SetBackgroundColour(wx.Colour(45, 45, 45))
-            self.m_textCtrl3.SetForegroundColour(wx.Colour(221,221,221))
-            self.m_staticText2.SetForegroundColour(wx.Colour(221,221,221))
-            self.m_staticText3.SetForegroundColour(wx.Colour(221,221,221))
+            self.m_textCtrl3.SetForegroundColour(wx.Colour(221, 221, 221))
+            self.m_staticText2.SetForegroundColour(wx.Colour(221, 221, 221))
+            self.m_staticText3.SetForegroundColour(wx.Colour(221, 221, 221))
 
     def __del__(self):
         pass
