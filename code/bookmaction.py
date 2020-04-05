@@ -7,6 +7,7 @@
 ##########################################################
 
 import os
+import platform
 import wx
 import wx.adv
 import bitmaps
@@ -79,7 +80,9 @@ class BAFrame(wx.Frame):
         self.m_searchCtrl = wx.SearchCtrl(self.m_panel1, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition,
                                           wx.Size(250, -1), style=wx.TE_PROCESS_ENTER)
         self.m_searchCtrl.ShowSearchButton(True)
-        self.m_searchCtrl.ShowCancelButton(True)
+        if (platform.system() == "Darwin"):
+            self.m_searchCtrl.ShowCancelButton(True)
+
         bSizer7.Add(self.m_searchCtrl, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALL, 5)
 
         bSizer6.Add(bSizer7, 0, wx.ALIGN_RIGHT, 5)
