@@ -100,7 +100,9 @@ class BookMarkDlg(wx.Dialog):
             # self.SetBackgroundColour(wx.Colour(236,236,236))
             # self.SetForegroundColour(wx.BLACK)
         else:
-            self.SetBackgroundColour(wx.Colour(21, 21, 21))
+            self.SetBackgroundColour(wx.Colour(45, 45, 45))
+            self.m_bookmarkCtrl.SetForegroundColour(wx.Colour(221,221,221))
+            self.m_descriptionCtrl.SetForegroundColour(wx.Colour(221,221,221))
 
     def OnPasteTxtFromClipboard(self, event):
         if not wx.TheClipboard.IsOpened():  # may crash, otherwise
