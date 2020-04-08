@@ -58,9 +58,6 @@ class BAFrame(wx.Frame):
         self.Layout()
         self.Centre(wx.BOTH)
 
-        # End of the control definition
-        self.__SetDialogAppearance()
-
         # autoload project if needed
         self.m_config = wx.FileConfig("bookmaction")
         myfile = self.m_config.Read("AutoLoadFile", "")
@@ -68,6 +65,9 @@ class BAFrame(wx.Frame):
 
         # populate menu file history
         self.m_fileHistoryMenu.Load(self.m_config)
+
+        # End of the control definition
+        self.__SetDialogAppearance()
 
     def __CreateControls(self):
         icon = wx.Icon()
@@ -110,7 +110,6 @@ class BAFrame(wx.Frame):
         self.m_searchCtrl.SetMenu(self.m_searchMenu)
 
     def __SetDialogAppearance(self):
-        self.m_config = wx.FileConfig("bookmaction")
         myAppearance = self.m_config.ReadInt("Appearance", 0)
         if (myAppearance == 0):  # light mode
             pass  # do nothing for light mode
@@ -289,7 +288,7 @@ class BAFrame(wx.Frame):
         self.m_bookmarkDocument.BookMarkDelete(self.m_listCtrl)
 
     def OnSettingsMenu(self, event):
-        mydlg = SettingsDlg(self)
+        mydlg = SettingsDlg(self, self.m_config)
         mydlg.ShowModal()
 
     def OnFileSave(self, event):

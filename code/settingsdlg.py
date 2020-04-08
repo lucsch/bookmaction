@@ -7,9 +7,11 @@ import wx
 
 class SettingsDlg(wx.Dialog):
 
-    def __init__(self, parent):
+    def __init__(self, parent, config_object):
         wx.Dialog.__init__(self, parent, id=wx.ID_ANY, title=u"Settings", pos=wx.DefaultPosition, size=wx.DefaultSize,
                            style=wx.DEFAULT_DIALOG_STYLE | wx.RESIZE_BORDER)
+
+        self.m_config_object = config_object
 
         self.SetSizeHints(wx.DefaultSize, wx.DefaultSize)
 
@@ -59,9 +61,8 @@ class SettingsDlg(wx.Dialog):
         self.SetMinSize(wx.Size(250, 280))
 
         # Getting config
-        self.m_config = wx.FileConfig("bookmaction")
-        myAppearance = self.m_config.ReadInt("Appearance", 0)
-        myLoadFile = self.m_config.Read("AutoLoadFile", "")
+        myAppearance = self.m_config_object.ReadInt("Appearance", 0)
+        myLoadFile = self.m_config_object.Read("AutoLoadFile", "")
         self.m_darkModeCtrl.SetValue(myAppearance)
         self.m_filePickerCtrl.SetPath(myLoadFile)
         self.__SetDialogAppearance()
@@ -71,7 +72,7 @@ class SettingsDlg(wx.Dialog):
 
     def __SetDialogAppearance(self):
         # self.m_config = wx.FileConfig("bookmaction")
-        myAppearance = self.m_config.ReadInt("Appearance", 0)
+        myAppearance = self.m_config_object.ReadInt("Appearance", 0)
         if (myAppearance == 0):  # light mode
             pass  # do nothing for da
             # self.SetBackgroundColour(wx.Colour(236,236,236))
@@ -80,8 +81,9 @@ class SettingsDlg(wx.Dialog):
             self.SetBackgroundColour(wx.Colour(21, 21, 21))
 
     def OnBtnOk(self, event):
-        self.m_config.WriteInt("Appearance", self.m_darkModeCtrl.IsChecked())
-        self.m_config.Write("AutoLoadFile", self.m_filePickerCtrl.GetPath())
+        self.m_config_object.WriteInt("Appearance", self.m_darkModeCtrl.IsChecked())
+        self.m_config_object.Write("AutoLoadFile", self.m_filePickerCtrl.GetPath())
+        self.m_config_object.Flush()
         self.Close()
 
     def __del__(self):
