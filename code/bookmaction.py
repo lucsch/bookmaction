@@ -115,6 +115,9 @@ class BAFrame(wx.Frame):
 
     def __CreateMenus(self):
         self.m_fileHistoryMenu = wx.FileHistory(maxFiles=5, idBase=wx.ID_FILE1)
+        self.m_menu_tag_list = {"No Color": wx.NullColour, "Red": wx.RED, "Orange": wx.Colour(253, 177, 80),
+                                "Yellow": wx.YELLOW, "Green": wx.GREEN, "Blue": wx.BLUE,
+                                "Violet": wx.Colour(190, 119, 226)}
 
         # menubar
         self.m_menubar = wx.MenuBar(0)
@@ -143,7 +146,8 @@ class BAFrame(wx.Frame):
 
         self.m_menu1.AppendSeparator()
 
-        self.m_menuSettings = wx.MenuItem(self.m_menu1, wx.ID_PREFERENCES, u"Settings...", wx.EmptyString, wx.ITEM_NORMAL)
+        self.m_menuSettings = wx.MenuItem(self.m_menu1, wx.ID_PREFERENCES, u"Settings...", wx.EmptyString,
+                                          wx.ITEM_NORMAL)
         self.m_menu1.Append(self.m_menuSettings)
 
         self.m_menu1.AppendSeparator()
@@ -166,6 +170,14 @@ class BAFrame(wx.Frame):
         self.m_menuBookEdit = wx.MenuItem(self.m_menu2, wx.ID_ANY, u"Edit..." + u"\t" + u"Ctrl+E", wx.EmptyString,
                                           wx.ITEM_NORMAL)
         self.m_menu2.Append(self.m_menuBookEdit)
+
+        self.m_menuTag = wx.Menu()
+
+        for color in self.m_menu_tag_list:
+            my_menu = wx.MenuItem(self.m_menuTag, wx.ID_ANY, color, wx.EmptyString, wx.ITEM_NORMAL)
+            self.m_menuTag.Append(my_menu)
+
+        self.m_menu2.AppendSubMenu(self.m_menuTag, u"Tag")
 
         self.m_menubar.Append(self.m_menu2, u"Bookmarks")
 
