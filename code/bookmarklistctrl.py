@@ -85,8 +85,8 @@ class BookMarkListCtrl(wx.ListCtrl):
         if (self.IsValidSelectedItem() == False):
             event.Skip()
             return
-        id_remove = self.GetParent().m_menuBookRemove.GetId()
-        id_edit = self.GetParent().m_menuBookEdit.GetId()
+        id_remove = self.GetParent().GetParent().m_menuBookRemove.GetId()
+        id_edit = self.GetParent().GetParent().m_menuBookEdit.GetId()
 
         m_menu_popup = wx.Menu()
         m_menuPopupRemove = wx.MenuItem(m_menu_popup, id_remove, u"Remove" + u"\t" + u"Del", wx.EmptyString,
