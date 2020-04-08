@@ -143,7 +143,7 @@ class BAFrame(wx.Frame):
 
         self.m_menu1.AppendSeparator()
 
-        self.m_menuSettings = wx.MenuItem(self.m_menu1, wx.ID_ANY, u"Settings...", wx.EmptyString, wx.ITEM_NORMAL)
+        self.m_menuSettings = wx.MenuItem(self.m_menu1, wx.ID_PREFERENCES, u"Settings...", wx.EmptyString, wx.ITEM_NORMAL)
         self.m_menu1.Append(self.m_menuSettings)
 
         self.m_menu1.AppendSeparator()
