@@ -35,6 +35,13 @@ class BAFrame(wx.Frame):
         self.ID_SEARCH_ACTION = wx.Window.NewControlId()
         self.ID_SEARCH_BOOKMARK = wx.Window.NewControlId()
         self.ID_SEARCH_DESCRIPTION = wx.Window.NewControlId()
+        self.ID_MENU_TAG_COLOR_NONE = wx.Window.NewControlId()
+        self.ID_MENU_TAG_COLOR_RED = wx.Window.NewControlId()
+        self.ID_MENU_TAG_COLOR_ORANGE = wx.Window.NewControlId()
+        self.ID_MENU_TAG_COLOR_YELLOW = wx.Window.NewControlId()
+        self.ID_MENU_TAG_COLOR_GREEN = wx.Window.NewControlId()
+        self.ID_MENU_TAG_COLOR_BLUE = wx.Window.NewControlId()
+        self.ID_MENU_TAG_COLOR_VIOLET = wx.Window.NewControlId()
 
         self.m_title = self.GetTitle()
         self.__CreateControls()
@@ -115,9 +122,12 @@ class BAFrame(wx.Frame):
 
     def __CreateMenus(self):
         self.m_fileHistoryMenu = wx.FileHistory(maxFiles=5, idBase=wx.ID_FILE1)
-        self.m_menu_tag_list = {"No Color": wx.NullColour, "Red": wx.RED, "Orange": wx.Colour(253, 177, 80),
-                                "Yellow": wx.YELLOW, "Green": wx.GREEN, "Blue": wx.BLUE,
-                                "Violet": wx.Colour(190, 119, 226)}
+        self.m_menu_tag_names = ["No Color", "Red", "Orange", "Yellow", "Green", "Blue", "Violet"]
+        self.m_menu_tag_colors = [wx.NullColour, wx.RED, wx.Colour(253, 177, 80), wx.YELLOW, wx.GREEN, wx.BLUE,
+                                  wx.Colour(190, 119, 226)]
+        self.m_menu_tag_ids = [self.ID_MENU_TAG_COLOR_NONE, self.ID_MENU_TAG_COLOR_RED, self.ID_MENU_TAG_COLOR_ORANGE,
+                               self.ID_MENU_TAG_COLOR_YELLOW, self.ID_MENU_TAG_COLOR_GREEN, self.ID_MENU_TAG_COLOR_BLUE,
+                               self.ID_MENU_TAG_COLOR_VIOLET]
 
         # menubar
         self.m_menubar = wx.MenuBar(0)
@@ -173,8 +183,9 @@ class BAFrame(wx.Frame):
 
         self.m_menuTag = wx.Menu()
 
-        for color in self.m_menu_tag_list:
-            my_menu = wx.MenuItem(self.m_menuTag, wx.ID_ANY, color, wx.EmptyString, wx.ITEM_NORMAL)
+        for index in range(len(self.m_menu_tag_names)):
+            my_menu = wx.MenuItem(self.m_menuTag, self.m_menu_tag_ids[index], self.m_menu_tag_names[index],
+                                  wx.EmptyString, wx.ITEM_NORMAL)
             self.m_menuTag.Append(my_menu)
 
         self.m_menu2.AppendSubMenu(self.m_menuTag, u"Tag")
@@ -218,6 +229,14 @@ class BAFrame(wx.Frame):
         self.m_searchCtrl.Bind(wx.EVT_SEARCHCTRL_SEARCH_BTN, self.OnSearch)
         self.m_searchCtrl.Bind(wx.EVT_TEXT_ENTER, self.OnSearch)
 
+        self.Bind(wx.EVT_MENU, self.OnTagMenu, id=self.ID_MENU_TAG_COLOR_NONE)
+        self.Bind(wx.EVT_MENU, self.OnTagMenu, id=self.ID_MENU_TAG_COLOR_RED)
+        self.Bind(wx.EVT_MENU, self.OnTagMenu, id=self.ID_MENU_TAG_COLOR_ORANGE)
+        self.Bind(wx.EVT_MENU, self.OnTagMenu, id=self.ID_MENU_TAG_COLOR_YELLOW)
+        self.Bind(wx.EVT_MENU, self.OnTagMenu, id=self.ID_MENU_TAG_COLOR_GREEN)
+        self.Bind(wx.EVT_MENU, self.OnTagMenu, id=self.ID_MENU_TAG_COLOR_BLUE)
+        self.Bind(wx.EVT_MENU, self.OnTagMenu, id=self.ID_MENU_TAG_COLOR_VIOLET)
+
     def OnSearch(self, event):
         column = 0  # action column
         if (self.m_searchMenu.IsChecked(self.ID_SEARCH_BOOKMARK)):
@@ -226,6 +245,19 @@ class BAFrame(wx.Frame):
             column = 2
         self.m_bookmarkDocument.SetBookMarksToList(self.m_listCtrl, filtertext=event.GetString(), filtercolumn=column)
         event.Skip()
+
+    def OnTagMenu(self, event):
+        my_id = event.GetId()
+        my_index = self.m_menu_tag_ids.index(my_id)
+        # wx.LogMessage("Tag menu pressed, color : {}".format(self.m_menu_tag_names[my_index]))
+
+        # temporary code
+        if (self.m_listCtrl.IsValidSelectedItem() == False):
+            return
+
+        my_listindex = self.m_listCtrl.GetFirstSelected()
+        my_colour = self.m_menu_tag_colors[my_index]
+        self.m_listCtrl.SetItemTextColour(my_listindex, my_colour)
 
     def __CreateStatusAndVersion(self):
         self.CreateStatusBar(2)
