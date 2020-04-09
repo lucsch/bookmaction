@@ -249,15 +249,27 @@ class BAFrame(wx.Frame):
     def OnTagMenu(self, event):
         my_id = event.GetId()
         my_index = self.m_menu_tag_ids.index(my_id)
-        # wx.LogMessage("Tag menu pressed, color : {}".format(self.m_menu_tag_names[my_index]))
+        my_tag_type = self.m_config.ReadInt("Tag", 0)
 
         # temporary code
-        if (self.m_listCtrl.IsValidSelectedItem() == False):
-            return
+        # if (self.m_listCtrl.IsValidSelectedItem() == False):
+        #    return
 
-        my_listindex = self.m_listCtrl.GetFirstSelected()
+       # get the colour
         my_colour = self.m_menu_tag_colors[my_index]
-        self.m_listCtrl.SetItemTextColour(my_listindex, my_colour)
+        if (my_tag_type == 0 and my_colour == wx.BLACK): # foreground
+            my_colour = wx.SystemSettings.GetColour(wx.SYS_COLOUR_LISTBOXTEXT)
+        elif (my_tag_type == 1 and my_colour == wx.BLACK): # background
+            my_colour = wx.SystemSettings.GetColour(wx.SYS_COLOUR_LISTBOX)
+
+        # loop for setting tags
+        for item in self.m_listCtrl.GetSelectedItems():
+            if (my_tag_type == 0 ): # foreground
+                self.m_listCtrl.SetItemTextColour(item, my_colour)
+            else: # background
+                if (my_colour == wx.BLACK):
+                    my_colour = wx.SystemSettings.GetColour(wx.SYS_COLOUR_LISTBOX)
+                self.m_listCtrl.SetItemBackgroundColour(item, my_colour)
 
     def __CreateStatusAndVersion(self):
         self.CreateStatusBar(2)

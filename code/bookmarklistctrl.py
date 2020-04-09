@@ -61,6 +61,24 @@ class BookMarkListCtrl(wx.ListCtrl):
             return False
         return True
 
+    def GetSelectedItems(self):
+        """    Gets the selected items for the list control.
+        Selection is returned as a list of selected indices,
+        low to high.
+        """
+        selection = []
+        index = self.GetFirstSelected()
+
+        # check for default text
+        if (self.GetItemText(index, col=1) == self.defaultColumnText):
+            return  selection
+
+        selection.append(index)
+        while len(selection) != self.GetSelectedItemCount():
+            index = self.GetNextSelected(index)
+            selection.append(index)
+        return selection
+
     def GetCountVisible(self):
         my_count = self.GetItemCount()
         if (my_count == 0):
