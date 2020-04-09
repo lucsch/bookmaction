@@ -19,18 +19,22 @@ class BookMark():
         self.m_description = ""
         self.m_action_index = 0
         self.m_action_list = ["Open", "Copy to Clipboard", "Website"]
+        self.m_tag_color = wx.NullColour
 
     def GetMemberAsList(self):
         myList = []
         myList.append(self.m_action_list[self.m_action_index])
         myList.append(self.m_path)
         myList.append(self.m_description)
+        myList.append(self.m_tag_color.GetAsString())
         return myList
 
     def LoadMemberFromList(self, list):
         self.m_action_index = self.m_action_list.index(list[0])
         self.m_path = list[1]
         self.m_description = list[2]
+        if (len(list) > 3):
+            self.m_tag_color = wx.Colour(list[3])
 
     def DoAction(self):
         if (self.m_action_index == 0):  # Open
@@ -69,9 +73,10 @@ class BookMark():
 class BookMarkDocument():
     """"""
 
-    def __init__(self, ):
+    def __init__(self, tag_foreground):
         """Constructor for BookMarkDocument"""
         self.ClearDocument()
+        self.m_tag_foreground = tag_foreground
 
     def ClearDocument(self):
         self.m_bookMarksList = []
@@ -134,21 +139,13 @@ class BookMarkDocument():
 
         if (filtertext == ""):
             for bookmark in self.m_bookMarksList:
-                listctrl.Append(bookmark.GetMemberAsList())
-                listctrl.SetItemData(listctrl.GetItemCount() - 1, bookmark.m_id)
+                listctrl.BookMarkAdd(bookmark, self.m_tag_foreground)
             return
 
         # support list filtering
         for bookmark in self.m_bookMarksList:
             if (self.__HasBookMarkText(filtertext, bookmark, filtercolumn) == True):
-                listctrl.Append(bookmark.GetMemberAsList())
-                listctrl.SetItemData(listctrl.GetItemCount() - 1, bookmark.m_id)
-
-    def GetBookMarksFromList(self, listctrl):
-        self.m_bookMarksList.clear()
-        for index in range(listctrl.GetItemCount()):
-            myData = listctrl.GetBookMarkDataFromList(index)
-            self.m_bookMarksList.append(myData)
+                listctrl.BookMarkAdd(bookmark, self.m_tag_foreground)
 
     def BookMarkAdd(self, listctrl):
         dlg = bookmarksdlg.BookMarkDlg(listctrl.GetParent())
@@ -179,6 +176,14 @@ class BookMarkDocument():
 
         self.m_bookMarksList[my_index] = dlg.m_BookMarkData
         listctrl.BookMarkEdit(self.m_bookMarksList[my_index], listctrl.GetFirstSelected())
+        self.m_isModified = True
+
+    def BookMarkTagSelected(self, listctrl, colour, tag_foreground=0):
+        # loop for setting tags in the document and in the list
+        for item in listctrl.GetSelectedItems():
+            my_bookmark_index = self.__GetIndexById(listctrl.GetItemData(item))
+            self.m_bookMarksList[my_bookmark_index].m_tag_color = colour
+            listctrl.BookMarkEdit(self.m_bookMarksList[my_bookmark_index], item, tag_foreground)
         self.m_isModified = True
 
     def BookMarkDelete(self, listctrl):

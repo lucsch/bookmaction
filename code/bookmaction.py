@@ -49,8 +49,6 @@ class BAFrame(wx.Frame):
         self.__CreateStatusAndVersion()
         self.__ConnectEvents()
 
-        self.m_bookmarkDocument = BookMarkDocument()
-
         # computing minimum size
         # mysizepanel = bSizer5.ComputeFittingWindowSize(self)
         # self.SetMinSize([mysizebutton[0] + mysizepanel[0], mysizebutton[1]])
@@ -58,8 +56,10 @@ class BAFrame(wx.Frame):
         self.Layout()
         self.Centre(wx.BOTH)
 
-        # autoload project if needed
         self.m_config = wx.FileConfig("bookmaction")
+        self.m_bookmarkDocument = BookMarkDocument(self.m_config.ReadInt("Tag", 0))
+
+        # autoload project if needed
         myfile = self.m_config.Read("AutoLoadFile", "")
         self.__OpenFile(myfile)
 
@@ -122,7 +122,7 @@ class BAFrame(wx.Frame):
     def __CreateMenus(self):
         self.m_fileHistoryMenu = wx.FileHistory(maxFiles=5, idBase=wx.ID_FILE1)
         self.m_menu_tag_names = ["No Color", "Red", "Orange", "Yellow", "Green", "Blue", "Violet"]
-        self.m_menu_tag_colors = [wx.BLACK, wx.RED, wx.Colour(253, 177, 80), wx.YELLOW, wx.GREEN, wx.BLUE,
+        self.m_menu_tag_colors = [wx.NullColour, wx.RED, wx.Colour(253, 177, 80), wx.YELLOW, wx.GREEN, wx.BLUE,
                                   wx.Colour(190, 119, 226)]
         self.m_menu_tag_ids = [self.ID_MENU_TAG_COLOR_NONE, self.ID_MENU_TAG_COLOR_RED, self.ID_MENU_TAG_COLOR_ORANGE,
                                self.ID_MENU_TAG_COLOR_YELLOW, self.ID_MENU_TAG_COLOR_GREEN, self.ID_MENU_TAG_COLOR_BLUE,
@@ -229,13 +229,13 @@ class BAFrame(wx.Frame):
         self.m_searchCtrl.Bind(wx.EVT_SEARCHCTRL_SEARCH_BTN, self.OnSearch)
         self.m_searchCtrl.Bind(wx.EVT_TEXT_ENTER, self.OnSearch)
 
-        self.Bind(wx.EVT_MENU, self.OnTagMenu, id=self.ID_MENU_TAG_COLOR_NONE)
-        self.Bind(wx.EVT_MENU, self.OnTagMenu, id=self.ID_MENU_TAG_COLOR_RED)
-        self.Bind(wx.EVT_MENU, self.OnTagMenu, id=self.ID_MENU_TAG_COLOR_ORANGE)
-        self.Bind(wx.EVT_MENU, self.OnTagMenu, id=self.ID_MENU_TAG_COLOR_YELLOW)
-        self.Bind(wx.EVT_MENU, self.OnTagMenu, id=self.ID_MENU_TAG_COLOR_GREEN)
-        self.Bind(wx.EVT_MENU, self.OnTagMenu, id=self.ID_MENU_TAG_COLOR_BLUE)
-        self.Bind(wx.EVT_MENU, self.OnTagMenu, id=self.ID_MENU_TAG_COLOR_VIOLET)
+        self.Bind(wx.EVT_MENU, self.OnBookMarkMenuTag, id=self.ID_MENU_TAG_COLOR_NONE)
+        self.Bind(wx.EVT_MENU, self.OnBookMarkMenuTag, id=self.ID_MENU_TAG_COLOR_RED)
+        self.Bind(wx.EVT_MENU, self.OnBookMarkMenuTag, id=self.ID_MENU_TAG_COLOR_ORANGE)
+        self.Bind(wx.EVT_MENU, self.OnBookMarkMenuTag, id=self.ID_MENU_TAG_COLOR_YELLOW)
+        self.Bind(wx.EVT_MENU, self.OnBookMarkMenuTag, id=self.ID_MENU_TAG_COLOR_GREEN)
+        self.Bind(wx.EVT_MENU, self.OnBookMarkMenuTag, id=self.ID_MENU_TAG_COLOR_BLUE)
+        self.Bind(wx.EVT_MENU, self.OnBookMarkMenuTag, id=self.ID_MENU_TAG_COLOR_VIOLET)
 
     def OnSearch(self, event):
         column = 0  # action column
@@ -246,30 +246,12 @@ class BAFrame(wx.Frame):
         self.m_bookmarkDocument.SetBookMarksToList(self.m_listCtrl, filtertext=event.GetString(), filtercolumn=column)
         event.Skip()
 
-    def OnTagMenu(self, event):
+    def OnBookMarkMenuTag(self, event):
         my_id = event.GetId()
         my_index = self.m_menu_tag_ids.index(my_id)
         my_tag_type = self.m_config.ReadInt("Tag", 0)
-
-        # temporary code
-        # if (self.m_listCtrl.IsValidSelectedItem() == False):
-        #    return
-
-       # get the colour
         my_colour = self.m_menu_tag_colors[my_index]
-        if (my_tag_type == 0 and my_colour == wx.BLACK): # foreground
-            my_colour = wx.SystemSettings.GetColour(wx.SYS_COLOUR_LISTBOXTEXT)
-        elif (my_tag_type == 1 and my_colour == wx.BLACK): # background
-            my_colour = wx.SystemSettings.GetColour(wx.SYS_COLOUR_LISTBOX)
-
-        # loop for setting tags
-        for item in self.m_listCtrl.GetSelectedItems():
-            if (my_tag_type == 0 ): # foreground
-                self.m_listCtrl.SetItemTextColour(item, my_colour)
-            else: # background
-                if (my_colour == wx.BLACK):
-                    my_colour = wx.SystemSettings.GetColour(wx.SYS_COLOUR_LISTBOX)
-                self.m_listCtrl.SetItemBackgroundColour(item, my_colour)
+        self.m_bookmarkDocument.BookMarkTagSelected(self.m_listCtrl, my_colour, my_tag_type)
 
     def __CreateStatusAndVersion(self):
         self.CreateStatusBar(2)
@@ -319,7 +301,6 @@ class BAFrame(wx.Frame):
         self.__SaveFile(mydlg.GetPath())
 
     def __SaveFile(self, filename):
-        self.m_bookmarkDocument.GetBookMarksFromList(self.m_listCtrl)
         self.m_bookmarkDocument.SaveObject(filename)
 
     def OnFileNew(self, event):

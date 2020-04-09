@@ -36,18 +36,40 @@ class BookMarkListCtrl(wx.ListCtrl):
     def SetColumnText(self, index, column, text):
         self.SetItem(index, column, str(text))
 
-    def BookMarkAdd(self, bookmark):
+    def BookMarkAdd(self, bookmark, tag_foreground=0):
         # check if default text is present
-        if (self.GetItemText(0, 1) == self.defaultColumnText):
+        if (self.GetItemCount() == 1 and self.GetItemText(0, 1) == self.defaultColumnText):
             self.DeleteAllItems()
 
-        self.Append(bookmark.GetMemberAsList())
+        my_list_data = []
+        my_list_data.append(bookmark.m_action_list[bookmark.m_action_index])
+        my_list_data.append(bookmark.m_path)
+        my_list_data.append(bookmark.m_description)
+        self.Append(my_list_data)
         self.SetItemData(self.GetItemCount() - 1, bookmark.m_id)
 
-    def BookMarkEdit(self, bookmark, index):
+        # manage colour
+        self.__SetDisplayTagColour(self.GetItemCount() -1, bookmark.m_tag_color, tag_foreground)
+
+    def __SetDisplayTagColour(self, index, colour, tag_foreground=0):
+        my_color = colour
+        if (tag_foreground == 0 and colour == wx.NullColour):  # foreground
+            my_color = wx.SystemSettings.GetColour(wx.SYS_COLOUR_LISTBOXTEXT)
+        elif (tag_foreground == 1 and colour == wx.NullColour):  # background
+            my_color = wx.SystemSettings.GetColour(wx.SYS_COLOUR_LISTBOX)
+
+        if (tag_foreground == 0):  # foreground
+            self.SetItemTextColour(index, my_color)
+        else:  # background
+            self.SetItemBackgroundColour(index, my_color)
+
+    def BookMarkEdit(self, bookmark, index, tag_foreground=0):
         self.SetColumnText(index, 0, bookmark.m_action_list[bookmark.m_action_index])
         self.SetColumnText(index, 1, bookmark.m_path)
         self.SetColumnText(index, 2, bookmark.m_description)
+
+        # manage colour
+        self.__SetDisplayTagColour(index, bookmark.m_tag_color, tag_foreground)
 
     def IsValidSelectedItem(self):
         # check for selected item
