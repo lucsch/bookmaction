@@ -32,6 +32,12 @@ class SettingsDlg(wx.Dialog):
 
         bSizer4.Add(sbSizer3, 1, wx.EXPAND | wx.ALL, 5)
 
+        m_radio_tag_ctrlChoices = [u"Foreground", u"Background"]
+        self.m_radio_tag_ctrl = wx.RadioBox(self, wx.ID_ANY, u"Tag", wx.DefaultPosition, wx.DefaultSize,
+                                            m_radio_tag_ctrlChoices, 1, wx.RA_SPECIFY_ROWS)
+        self.m_radio_tag_ctrl.SetSelection(0)
+        bSizer4.Add(self.m_radio_tag_ctrl, 0, wx.ALL | wx.EXPAND, 5)
+
         sbSizer5 = wx.StaticBoxSizer(wx.StaticBox(self, wx.ID_ANY, u"Auto load document"), wx.VERTICAL)
 
         self.m_filePickerCtrl = wx.FilePickerCtrl(sbSizer5.GetStaticBox(), wx.ID_ANY, wx.EmptyString, u"Select a file",
@@ -60,15 +66,20 @@ class SettingsDlg(wx.Dialog):
 
         self.SetMinSize(wx.Size(250, 280))
 
-        # Getting config
-        myAppearance = self.m_config_object.ReadInt("Appearance", 0)
-        myLoadFile = self.m_config_object.Read("AutoLoadFile", "")
-        self.m_darkModeCtrl.SetValue(myAppearance)
-        self.m_filePickerCtrl.SetPath(myLoadFile)
+        # appareance
         self.__SetDialogAppearance()
 
         # connecting event
         self.Bind(wx.EVT_BUTTON, self.OnBtnOk, id=wx.ID_OK)
+
+    def TransferDataToWindow(self):
+        myAppearance = self.m_config_object.ReadInt("Appearance", 0)
+        myLoadFile = self.m_config_object.Read("AutoLoadFile", "")
+        my_tag_config = self.m_config_object.ReadInt("Tag", 0)
+        self.m_darkModeCtrl.SetValue(myAppearance)
+        self.m_filePickerCtrl.SetPath(myLoadFile)
+        self.m_radio_tag_ctrl.SetSelection(my_tag_config)
+        return True
 
     def __SetDialogAppearance(self):
         # self.m_config = wx.FileConfig("bookmaction")
@@ -83,6 +94,7 @@ class SettingsDlg(wx.Dialog):
     def OnBtnOk(self, event):
         self.m_config_object.WriteInt("Appearance", self.m_darkModeCtrl.IsChecked())
         self.m_config_object.Write("AutoLoadFile", self.m_filePickerCtrl.GetPath())
+        self.m_config_object.WriteInt("Tag", self.m_radio_tag_ctrl.GetSelection())
         self.m_config_object.Flush()
         self.Close()
 

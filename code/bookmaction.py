@@ -122,7 +122,7 @@ class BAFrame(wx.Frame):
     def __CreateMenus(self):
         self.m_fileHistoryMenu = wx.FileHistory(maxFiles=5, idBase=wx.ID_FILE1)
         self.m_menu_tag_names = ["No Color", "Red", "Orange", "Yellow", "Green", "Blue", "Violet"]
-        self.m_menu_tag_colors = [wx.NullColour, wx.RED, wx.Colour(253, 177, 80), wx.YELLOW, wx.GREEN, wx.BLUE,
+        self.m_menu_tag_colors = [wx.BLACK, wx.RED, wx.Colour(253, 177, 80), wx.YELLOW, wx.GREEN, wx.BLUE,
                                   wx.Colour(190, 119, 226)]
         self.m_menu_tag_ids = [self.ID_MENU_TAG_COLOR_NONE, self.ID_MENU_TAG_COLOR_RED, self.ID_MENU_TAG_COLOR_ORANGE,
                                self.ID_MENU_TAG_COLOR_YELLOW, self.ID_MENU_TAG_COLOR_GREEN, self.ID_MENU_TAG_COLOR_BLUE,
@@ -183,8 +183,9 @@ class BAFrame(wx.Frame):
         self.m_menuTag = wx.Menu()
 
         for index in range(len(self.m_menu_tag_names)):
-            my_menu = wx.MenuItem(self.m_menuTag, self.m_menu_tag_ids[index], self.m_menu_tag_names[index],
-                                  wx.EmptyString, wx.ITEM_NORMAL)
+            my_menu = wx.MenuItem(self.m_menuTag, self.m_menu_tag_ids[index],
+                                  self.m_menu_tag_names[index] + u"\t" + u"Ctrl+" + str(index + 1), wx.EmptyString,
+                                  wx.ITEM_NORMAL)
             self.m_menuTag.Append(my_menu)
 
         self.m_menu2.AppendSubMenu(self.m_menuTag, u"Tag")
