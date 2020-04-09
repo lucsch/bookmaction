@@ -53,9 +53,9 @@ class BookMarkListCtrl(wx.ListCtrl):
 
     def __SetDisplayTagColour(self, index, colour, tag_foreground=0):
         my_color = colour
-        if (tag_foreground == 0 and colour == wx.NullColour):  # foreground
+        if (tag_foreground == 0 and colour == wx.BLACK):  # foreground
             my_color = wx.SystemSettings.GetColour(wx.SYS_COLOUR_LISTBOXTEXT)
-        elif (tag_foreground == 1 and colour == wx.NullColour):  # background
+        elif (tag_foreground == 1 and colour == wx.BLACK):  # background
             my_color = wx.SystemSettings.GetColour(wx.SYS_COLOUR_LISTBOX)
 
         if (tag_foreground == 0):  # foreground

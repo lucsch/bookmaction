@@ -19,7 +19,7 @@ class BookMark():
         self.m_description = ""
         self.m_action_index = 0
         self.m_action_list = ["Open", "Copy to Clipboard", "Website"]
-        self.m_tag_color = wx.NullColour
+        self.m_tag_color = wx.BLACK
 
     def GetMemberAsList(self):
         myList = []
@@ -154,7 +154,7 @@ class BookMarkDocument():
 
         my_bookmark = dlg.m_BookMarkData
         self.m_bookMarksList.append(my_bookmark)
-        listctrl.BookMarkAdd(my_bookmark)
+        listctrl.BookMarkAdd(my_bookmark, self.m_tag_foreground)
         self.m_isModified = True
         return True
 
@@ -175,7 +175,7 @@ class BookMarkDocument():
             return False
 
         self.m_bookMarksList[my_index] = dlg.m_BookMarkData
-        listctrl.BookMarkEdit(self.m_bookMarksList[my_index], listctrl.GetFirstSelected())
+        listctrl.BookMarkEdit(self.m_bookMarksList[my_index], listctrl.GetFirstSelected(), self.m_tag_foreground)
         self.m_isModified = True
 
     def BookMarkTagSelected(self, listctrl, colour, tag_foreground=0):
