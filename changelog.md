@@ -6,9 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.74] - 2020-04-10
+
 ### Added
 - A new about dialog
 - Items can now be 'tagged' using different colors. Those are saved in the project.
+- A new settings for choosing between foreground and background tagging.
 
 ## [1.0.0] - 2020-04-03
 ### Added
