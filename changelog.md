@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Bug fix for the settings dialog with incorrect file extension
+
 ## [1.1.74] - 2020-04-10
 
 ### Added
