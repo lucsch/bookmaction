@@ -54,11 +54,12 @@ class CreateApp(object):
         #            print("          Tree('..{}font', prefix='font'),".format(os.path.sep))
 
         if self.plateform == ACTIVE_PLATEFORM[2]:  # OSX
-            for line in fileinput.input(os.path.join(self.binpath, "bookmaction.spec"), inplace=1):
+            for line in fileinput.input(os.path.join(self.binpath, "bookmaction_{}.spec".format(self.m_commit_number)),
+                                        inplace=1):
                 if "bundle_identifier=None)" in line:
                     print("             bundle_identifier=None,")
                     print("             info_plist={")
-                    print("                 'CFBundleShortVersionString': '1.0.{}',".format(self.m_commit_number))
+                    print("                 'CFBundleShortVersionString': '1.2.{}',".format(self.m_commit_number))
                     print("                 'NSHumanReadableCopyright': '(c) 2020, Lucien SCHREIBER',".format(
                         self.m_commit_number))
                     print("                 'NSHighResolutionCapable': 'True'")
@@ -76,21 +77,27 @@ class CreateApp(object):
             "pyi-makespec",
             "--onefile",
             "--windowed",
+            "--hidden-import=wx",
+            "--hidden-import=wx._xml",
+            "--hidden-import=pkg_resources.py2_warn",
             "--icon={}".format(self.iconfile),
-            os.path.join(self.basepath, "bookmaction", "bookmaction.py")]
+            "-nbookmaction_{}".format(self.m_commit_number),
+            os.path.join(self.basepath, "bookmaction", "__main__.py")]
+
         print(command)
         try:
             p = subprocess.Popen(command, cwd=self.binpath)
             p.wait()
         except:
-            print("Error running" + command)
+            print("Error running", command)
             return False
 
         self.modify_spec_file()
 
         # run pyinstaller with fipro.spec
         try:
-            p = subprocess.Popen(["pyinstaller", "bookmaction.spec", "-y"], cwd=self.binpath)
+            p = subprocess.Popen(["pyinstaller", "bookmaction_{}.spec".format(self.m_commit_number), "-y"],
+                                 cwd=self.binpath)
             p.wait()
         except:
             print("Error running : pyinstaller bookmaction.spec")

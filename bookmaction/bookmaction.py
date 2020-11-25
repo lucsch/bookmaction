@@ -185,9 +185,6 @@ class BAFrame(wx.Frame):
 
         self.m_menu2.AppendSeparator()
 
-        self.m_menui_book_search = wx.MenuItem(self.m_menu2, wx.ID_ANY, "Search" + "u\t" + u"Ctrl+F")
-        self.m_menu2.Append(self.m_menui_book_search)
-
         self.m_menuTag = wx.Menu()
 
         for index in range(len(self.m_menu_tag_names)):
@@ -198,7 +195,14 @@ class BAFrame(wx.Frame):
 
         self.m_menu2.AppendSubMenu(self.m_menuTag, u"Tag")
 
+        self.m_menu2.AppendSeparator()
+        self.m_menui_book_search = wx.MenuItem(self.m_menu2, wx.ID_ANY, "Search" + u"\t" + u"Ctrl+F")
+        self.m_menu2.Append(self.m_menui_book_search)
+
         self.m_menubar.Append(self.m_menu2, u"Bookmarks")
+
+
+
 
         self.m_menu3 = wx.Menu()
         self.m_menuAbout = wx.MenuItem(self.m_menu3, wx.ID_ABOUT, u"About", wx.EmptyString, wx.ITEM_NORMAL)
