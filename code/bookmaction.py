@@ -180,6 +180,11 @@ class BAFrame(wx.Frame):
                                           wx.ITEM_NORMAL)
         self.m_menu2.Append(self.m_menuBookEdit)
 
+        self.m_menu2.AppendSeparator()
+
+        self.m_menui_book_search = wx.MenuItem(self.m_menu2, wx.ID_ANY, "Search" + "u\t" + u"Ctrl+F")
+        self.m_menu2.Append(self.m_menui_book_search)
+
         self.m_menuTag = wx.Menu()
 
         for index in range(len(self.m_menu_tag_names)):
@@ -210,6 +215,7 @@ class BAFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.OnBookMarkMenuEdit, id=self.m_menuBookEdit.GetId())
         self.Bind(wx.EVT_MENU, self.OnBookMarkMenuDelete, id=self.m_menuBookRemove.GetId())
         self.Bind(wx.EVT_MENU, self.OnSettingsMenu, id=self.m_menuSettings.GetId())
+        self.Bind(wx.EVT_MENU, self.OnBookMarkSearch, id=self.m_menui_book_search.GetId())
 
         self.Bind(wx.EVT_MENU, self.OnQuit, id=wx.ID_EXIT)
         self.Bind(wx.EVT_MENU, self.OnAbout, id=wx.ID_ABOUT)
@@ -285,6 +291,9 @@ class BAFrame(wx.Frame):
     def OnSettingsMenu(self, event):
         mydlg = SettingsDlg(self, self.m_config)
         mydlg.ShowModal()
+
+    def OnBookMarkSearch(self, event):
+        self.m_searchCtrl.SetFocus()
 
     def OnFileSave(self, event):
         if (self.m_bookmarkDocument.m_docName == ""):
