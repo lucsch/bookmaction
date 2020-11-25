@@ -29,8 +29,7 @@ jobs:
         - cd install
         - python3 createapp.py OSX
         - cd ..
-        - rm bin/dist/bookmaction
-        - python3 install/createdmg.py bookmaction bin/dist
+        - python3 install/createdmg.py bookmaction bin/dist bin
     - name: "Python 3.8.2 on Windows"
       os: windows           # Windows 10.0.17134 N/A Build 17134
       language: shell       # 'language: python' is an error on Travis CI Windows

@@ -11,7 +11,7 @@ import argparse
 import subprocess
 
 
-def CreateInstaller(name, app_path, use_version=True):
+def CreateInstaller(name, app_path, output_path, use_version=True):
     version = 0
     basepath = os.path.join(os.path.dirname(__file__), "..")
     if use_version is True:
@@ -30,7 +30,7 @@ def CreateInstaller(name, app_path, use_version=True):
         'create',
         '-volname', name,
         '-srcfolder', app_path,
-        name + str(version) + ".dmg"]
+        os.path.join(output_path, name + str(version) + ".dmg")]
     print(mycommand)
 
     try:
@@ -43,6 +43,13 @@ def CreateInstaller(name, app_path, use_version=True):
     print("Creating DMG finished!")
 
 
+def delete_binary(app_path):
+    for name in os.listdir(app_path):
+        if os.path.isfile(os.path.join(app_path, name)) and not name.startswith("."):
+            print("removing : " + name)
+            os.remove(os.path.join(app_path, name))
+
+
 ##########################################################
 # Main function, parse command line arguments
 ##########################################################
@@ -50,5 +57,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('name', help='Installer Name')
     parser.add_argument('path', help='Application Path')
+    parser.add_argument('output_path', help="Output path for DMG")
     args = parser.parse_args()
-    CreateInstaller(args.name, args.path)
+    delete_binary(args.path)
+    CreateInstaller(args.name, args.path, args.output_path)
