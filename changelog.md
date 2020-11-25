@@ -18,7 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Bug fix for the settings dialog with incorrect file extension
 - Displaying more information in the about dialog (see #1)
-- code refactorization
+- code refactorization (structure as a module)
 - improving Travis build scripts
 
 ## [1.1.74] - 2020-04-10
