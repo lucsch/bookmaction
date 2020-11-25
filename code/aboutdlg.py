@@ -1,3 +1,5 @@
+import platform
+
 import wx
 import version
 import bitmaps
@@ -7,7 +9,7 @@ class AboutDlg(wx.Dialog):
 
     def __init__(self, parent, programname):
         wx.Dialog.__init__(self, parent, id=wx.ID_ANY, title=u"About", pos=wx.DefaultPosition, size=wx.DefaultSize,
-                           style=wx.DEFAULT_DIALOG_STYLE)
+                           style=wx.DEFAULT_DIALOG_STYLE | wx.RESIZE_BORDER)
 
         self.SetSizeHints(wx.DefaultSize, wx.DefaultSize)
 
@@ -59,7 +61,9 @@ class AboutDlg(wx.Dialog):
         # set version number
         self.m_textCtrl3.AppendText("Commit id: " + version.COMMIT_ID + "\n")
         self.m_textCtrl3.AppendText("Commit number: " + version.COMMIT_NUMBER + "\n")
-        self.m_textCtrl3.AppendText("Branch: " + version.BRANCH_NAME)
+        self.m_textCtrl3.AppendText("Branch: " + version.BRANCH_NAME + "\n")
+        self.m_textCtrl3.AppendText("Python: " + platform.python_version() + "\n")
+        self.m_textCtrl3.AppendText("wxWidgets: " + wx.version())
 
         self.__SetDialogAppearance()
 
