@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- None
+
+## [1.2.85] - 2020-11-25
+
 ### Added
 
 - Adding a shortcut for searching bookmarks (see #2)
@@ -14,6 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Bug fix for the settings dialog with incorrect file extension
 - Displaying more information in the about dialog (see #1)
+- code refactorization
+- improving Travis build scripts
 
 ## [1.1.74] - 2020-04-10
 
