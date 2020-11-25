@@ -38,7 +38,7 @@ class CreateApp(object):
     def update_version(self):
         """update the about.py file with the version number"""
         my_version = createversion.GitVersion()
-        my_version.WriteToFile("../code/version.py")
+        my_version.WriteToFile("../bookmaction/version.py")
         self.m_commit_number = my_version.m_commit_number
         return True
 
@@ -77,7 +77,7 @@ class CreateApp(object):
             "--onefile",
             "--windowed",
             "--icon={}".format(self.iconfile),
-            os.path.join(self.basepath, "code", "bookmaction.py")]
+            os.path.join(self.basepath, "bookmaction", "bookmaction.py")]
         print(command)
         try:
             p = subprocess.Popen(command, cwd=self.binpath)

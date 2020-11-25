@@ -15,7 +15,7 @@ def CreateInstaller(name, app_path, use_version=True):
     version = 0
     basepath = os.path.join(os.path.dirname(__file__), "..")
     if use_version is True:
-        with open(os.path.join(basepath, "code", "version.py")) as reader:
+        with open(os.path.join(basepath, "bookmaction", "version.py")) as reader:
             for line in reader:
                 if line.startswith("COMMIT_NUMBER"):
                     version = int(line[15:-2])

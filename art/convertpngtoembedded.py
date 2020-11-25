@@ -5,7 +5,7 @@ import glob
 
 from wx.tools import img2py
 
-output = '../code/bitmaps.py'
+output = '../bookmaction/bitmaps.py'
 
 # get the list of BMP files
 files = glob.glob('*.png')  # TODO: chose your extension here

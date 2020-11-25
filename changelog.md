@@ -6,9 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Adding a shortcut for searching bookmarks (see #2)
+
 ### Changed
 
 - Bug fix for the settings dialog with incorrect file extension
+- Displaying more information in the about dialog (see #1)
 
 ## [1.1.74] - 2020-04-10
 
