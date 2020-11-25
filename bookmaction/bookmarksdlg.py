@@ -1,11 +1,12 @@
 import wx
 
-import bookmarks
+from bookmaction.bookmarks import BookMark
 
 
 class BookMarkDlg(wx.Dialog):
+    m_BookMarkData: BookMark
 
-    def __init__(self, parent):
+    def __init__(self, parent, bookmark_data):
         wx.Dialog.__init__(self, parent, id=wx.ID_ANY, title=u"Edit BookMarks", pos=wx.DefaultPosition,
                            size=wx.DefaultSize, style=wx.DEFAULT_DIALOG_STYLE | wx.RESIZE_BORDER)
         self.SetSizeHints(wx.DefaultSize, wx.DefaultSize)
@@ -57,7 +58,7 @@ class BookMarkDlg(wx.Dialog):
         m_sdbSizer1.AddButton(self.m_sdbSizer1OK)
         self.m_sdbSizer1Cancel = wx.Button(self, wx.ID_CANCEL)
         m_sdbSizer1.AddButton(self.m_sdbSizer1Cancel)
-        m_sdbSizer1.Realize();
+        m_sdbSizer1.Realize()
 
         bSizer2.Add(m_sdbSizer1, 0, wx.EXPAND | wx.ALL, 5)
 
@@ -71,7 +72,7 @@ class BookMarkDlg(wx.Dialog):
 
         # End of the control definition
         self.__SetDialogAppearance()
-        self.m_BookMarkData = bookmarks.BookMark()
+        self.m_BookMarkData = bookmark_data
 
         # Connect Events
         self.m_btnClipboardTxt.Bind(wx.EVT_BUTTON, self.OnPasteTxtFromClipboard)
@@ -95,14 +96,14 @@ class BookMarkDlg(wx.Dialog):
     def __SetDialogAppearance(self):
         self.m_config = wx.FileConfig("bookmaction")
         myAppearance = self.m_config.ReadInt("Appearance", 0)
-        if (myAppearance == 0):  # light mode
+        if myAppearance == 0:  # light mode
             pass  # do nothing for light mode
             # self.SetBackgroundColour(wx.Colour(236,236,236))
             # self.SetForegroundColour(wx.BLACK)
         else:
             self.SetBackgroundColour(wx.Colour(45, 45, 45))
-            self.m_bookmarkCtrl.SetForegroundColour(wx.Colour(221,221,221))
-            self.m_descriptionCtrl.SetForegroundColour(wx.Colour(221,221,221))
+            self.m_bookmarkCtrl.SetForegroundColour(wx.Colour(221, 221, 221))
+            self.m_descriptionCtrl.SetForegroundColour(wx.Colour(221, 221, 221))
 
     def OnPasteTxtFromClipboard(self, event):
         if not wx.TheClipboard.IsOpened():  # may crash, otherwise

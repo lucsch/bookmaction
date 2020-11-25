@@ -1,5 +1,6 @@
 import wx
-import bookmarks
+
+from bookmaction.bookmarks import BookMark
 
 
 class BookMarkListCtrl(wx.ListCtrl):
@@ -18,6 +19,7 @@ class BookMarkListCtrl(wx.ListCtrl):
         self.InsertColumn(1, "BookMark", width=400)
         self.InsertColumn(2, "Description", width=200)
 
+        self.defaultColumnText = "Add BookMark to start!"
         self.AppendDefaultText()
 
         # bind events
@@ -26,7 +28,6 @@ class BookMarkListCtrl(wx.ListCtrl):
         self.Bind(wx.EVT_LIST_ITEM_RIGHT_CLICK, self.OnRightClickItem)
 
     def AppendDefaultText(self):
-        self.defaultColumnText = "Add BookMark to start!"
         self.Append(["", self.defaultColumnText])
 
     def ClearList(self):
@@ -38,27 +39,26 @@ class BookMarkListCtrl(wx.ListCtrl):
 
     def BookMarkAdd(self, bookmark, tag_foreground=0):
         # check if default text is present
-        if (self.GetItemCount() == 1 and self.GetItemText(0, 1) == self.defaultColumnText):
+        if self.GetItemCount() == 1 and self.GetItemText(0, 1) == self.defaultColumnText:
             self.DeleteAllItems()
 
-        my_list_data = []
-        my_list_data.append(bookmark.m_action_list[bookmark.m_action_index])
-        my_list_data.append(bookmark.m_path)
-        my_list_data.append(bookmark.m_description)
+        my_list_data = [bookmark.m_action_list[bookmark.m_action_index],
+                        bookmark.m_path,
+                        bookmark.m_description]
         self.Append(my_list_data)
         self.SetItemData(self.GetItemCount() - 1, bookmark.m_id)
 
         # manage colour
-        self.__SetDisplayTagColour(self.GetItemCount() -1, bookmark.m_tag_color, tag_foreground)
+        self.__SetDisplayTagColour(self.GetItemCount() - 1, bookmark.m_tag_color, tag_foreground)
 
     def __SetDisplayTagColour(self, index, colour, tag_foreground=0):
         my_color = colour
-        if (tag_foreground == 0 and colour == wx.BLACK):  # foreground
+        if tag_foreground == 0 and colour == wx.BLACK:  # foreground
             my_color = wx.SystemSettings.GetColour(wx.SYS_COLOUR_LISTBOXTEXT)
-        elif (tag_foreground == 1 and colour == wx.BLACK):  # background
+        elif tag_foreground == 1 and colour == wx.BLACK:  # background
             my_color = wx.SystemSettings.GetColour(wx.SYS_COLOUR_LISTBOX)
 
-        if (tag_foreground == 0):  # foreground
+        if tag_foreground == 0:  # foreground
             self.SetItemTextColour(index, my_color)
         else:  # background
             self.SetItemBackgroundColour(index, my_color)
@@ -73,13 +73,13 @@ class BookMarkListCtrl(wx.ListCtrl):
 
     def IsValidSelectedItem(self):
         # check for selected item
-        if (self.GetSelectedItemCount() == 0 or self.GetSelectedItemCount() > 1):
+        if self.GetSelectedItemCount() == 0 or self.GetSelectedItemCount() > 1:
             wx.LogWarning("Select only one bookmark!")
             return False
 
         itemindex = self.GetFirstSelected()
         # check and ignore default text
-        if (self.GetItemText(itemindex, col=1) == self.defaultColumnText):
+        if self.GetItemText(itemindex, col=1) == self.defaultColumnText:
             return False
         return True
 
@@ -92,8 +92,8 @@ class BookMarkListCtrl(wx.ListCtrl):
         index = self.GetFirstSelected()
 
         # check for default text
-        if (self.GetItemText(index, col=1) == self.defaultColumnText):
-            return  selection
+        if self.GetItemText(index, col=1) == self.defaultColumnText:
+            return selection
 
         selection.append(index)
         while len(selection) != self.GetSelectedItemCount():
@@ -103,14 +103,14 @@ class BookMarkListCtrl(wx.ListCtrl):
 
     def GetCountVisible(self):
         my_count = self.GetItemCount()
-        if (my_count == 0):
+        if my_count == 0:
             return 0
-        elif (my_count == 1 and self.GetItemText(0, col=1) == self.defaultColumnText):
+        elif my_count == 1 and self.GetItemText(0, col=1) == self.defaultColumnText:
             return 0
         return self.GetItemCount()
 
     def GetBookMarkDataFromList(self, index):
-        my_data = bookmarks.BookMark()
+        my_data = BookMark()
         my_data.m_id = self.GetItemData(index)
         my_data.m_action_index = my_data.m_action_list.index(self.GetItemText(index, col=0))
         my_data.m_path = self.GetItemText(index, col=1)
@@ -122,7 +122,7 @@ class BookMarkListCtrl(wx.ListCtrl):
         my_data.DoAction()
 
     def OnRightClickItem(self, event):
-        if (self.IsValidSelectedItem() == False):
+        if self.IsValidSelectedItem() is False:
             event.Skip()
             return
         id_remove = self.GetParent().GetParent().m_menuBookRemove.GetId()
@@ -152,7 +152,7 @@ class BookMarkListCtrl(wx.ListCtrl):
         self.PopupMenu(m_menu_popup)
 
     def OnDeleteListItem(self, event):
-        if (event.GetKeyCode() != wx.WXK_DELETE or event.GetKeyCode() != wx.WXK_BACK):
+        if event.GetKeyCode() != wx.WXK_DELETE or event.GetKeyCode() != wx.WXK_BACK:
             event.Skip()
             return
 

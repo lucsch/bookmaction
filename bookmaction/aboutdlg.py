@@ -1,8 +1,11 @@
 import platform
 
 import wx
-import version
-import bitmaps
+
+from bookmaction.version import COMMIT_ID
+from bookmaction.version import COMMIT_NUMBER
+from bookmaction.version import BRANCH_NAME
+from bookmaction.bitmaps import bookmaction
 
 
 class AboutDlg(wx.Dialog):
@@ -31,12 +34,12 @@ class AboutDlg(wx.Dialog):
         m_sdbSizer3 = wx.StdDialogButtonSizer()
         self.m_sdbSizer3Cancel = wx.Button(self, wx.ID_CANCEL)
         m_sdbSizer3.AddButton(self.m_sdbSizer3Cancel)
-        m_sdbSizer3.Realize();
+        m_sdbSizer3.Realize()
 
         bSizer8.Add(m_sdbSizer3, 0, wx.EXPAND | wx.ALL, 5)
 
         # append bitmap
-        my_bitmap = bitmaps.bookmaction.GetBitmap()
+        my_bitmap = bookmaction.GetBitmap()
         my_image = my_bitmap.ConvertToImage()
         my_image.Rescale(32, 32)
         my_small_bmp = wx.Bitmap(my_image)
@@ -59,9 +62,9 @@ class AboutDlg(wx.Dialog):
         self.m_staticText3.SetFont(my_font)
 
         # set version number
-        self.m_textCtrl3.AppendText("Commit id: " + version.COMMIT_ID + "\n")
-        self.m_textCtrl3.AppendText("Commit number: " + version.COMMIT_NUMBER + "\n")
-        self.m_textCtrl3.AppendText("Branch: " + version.BRANCH_NAME + "\n")
+        self.m_textCtrl3.AppendText("Commit id: " + COMMIT_ID + "\n")
+        self.m_textCtrl3.AppendText("Commit number: " + COMMIT_NUMBER + "\n")
+        self.m_textCtrl3.AppendText("Branch: " + BRANCH_NAME + "\n")
         self.m_textCtrl3.AppendText("Python: " + platform.python_version() + "\n")
         self.m_textCtrl3.AppendText("wxWidgets: " + wx.version())
 
@@ -76,7 +79,7 @@ class AboutDlg(wx.Dialog):
     def __SetDialogAppearance(self):
         self.m_config = wx.FileConfig("bookmaction")
         myAppearance = self.m_config.ReadInt("Appearance", 0)
-        if (myAppearance == 0):  # light mode
+        if myAppearance == 0:  # light mode
             pass  # do nothing for light mode
             # self.SetBackgroundColour(wx.Colour(236,236,236))
             # self.SetForegroundColour(wx.BLACK)

@@ -8,14 +8,17 @@
 
 import os
 import platform
+
 import wx
 import wx.adv
-import bitmaps
-import version  # this file is generated with git-version
-from bookmarklistctrl import *
-from settingsdlg import *
-from bookmarks import *
-from aboutdlg import *
+
+from bookmaction.aboutdlg import AboutDlg
+from bookmaction.bitmaps import bookmaction
+from bookmaction.bookmarkdoc import BookMarkDocument
+from bookmaction.bookmarklistctrl import BookMarkListCtrl
+from bookmaction.settingsdlg import SettingsDlg
+from bookmaction.version import COMMIT_ID  # this file is generated with git-version
+from bookmaction.version import COMMIT_NUMBER
 
 
 ##########################################################
@@ -71,7 +74,7 @@ class BAFrame(wx.Frame):
 
     def __CreateControls(self):
         icon = wx.Icon()
-        icon.CopyFromBitmap(bitmaps.bookmaction.GetBitmap())
+        icon.CopyFromBitmap(bookmaction.GetBitmap())
         self.SetIcon(icon)
 
         bSizer1 = wx.BoxSizer(wx.VERTICAL)
@@ -87,7 +90,7 @@ class BAFrame(wx.Frame):
         self.m_searchCtrl = wx.SearchCtrl(self.m_panel1, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition,
                                           wx.Size(250, -1), style=wx.TE_PROCESS_ENTER)
         self.m_searchCtrl.ShowSearchButton(True)
-        if (platform.system() == "Darwin"):
+        if platform.system() == "Darwin":
             self.m_searchCtrl.ShowCancelButton(True)
 
         bSizer7.Add(self.m_searchCtrl, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALL, 5)
@@ -111,7 +114,7 @@ class BAFrame(wx.Frame):
 
     def __SetDialogAppearance(self):
         myAppearance = self.m_config.ReadInt("Appearance", 0)
-        if (myAppearance == 0):  # light mode
+        if myAppearance == 0:  # light mode
             pass  # do nothing for light mode
             # self.SetBackgroundColour(wx.Colour(236,236,236))
             # self.SetForegroundColour(wx.BLACK)
@@ -245,9 +248,9 @@ class BAFrame(wx.Frame):
 
     def OnSearch(self, event):
         column = 0  # action column
-        if (self.m_searchMenu.IsChecked(self.ID_SEARCH_BOOKMARK)):
+        if self.m_searchMenu.IsChecked(self.ID_SEARCH_BOOKMARK):
             column = 1
-        elif (self.m_searchMenu.IsChecked(self.ID_SEARCH_DESCRIPTION)):
+        elif self.m_searchMenu.IsChecked(self.ID_SEARCH_DESCRIPTION):
             column = 2
         self.m_bookmarkDocument.SetBookMarksToList(self.m_listCtrl, filtertext=event.GetString(), filtercolumn=column)
         event.Skip()
@@ -263,8 +266,9 @@ class BAFrame(wx.Frame):
         self.CreateStatusBar(2)
         self.SetStatusText(self.__GetGitVersion(), 1)
 
-    def __GetGitVersion(self):
-        return "version: " + str(version.COMMIT_NUMBER) + " (" + version.COMMIT_ID + ")"
+    @staticmethod
+    def __GetGitVersion():
+        return "version: " + str(COMMIT_NUMBER) + " (" + COMMIT_ID + ")"
 
     def __del__(self):
         pass
@@ -296,7 +300,7 @@ class BAFrame(wx.Frame):
         self.m_searchCtrl.SetFocus()
 
     def OnFileSave(self, event):
-        if (self.m_bookmarkDocument.m_docName == ""):
+        if self.m_bookmarkDocument.m_docName == "":
             return self.OnFileSaveAs(event)
 
         self.__SaveFile(self.m_bookmarkDocument.m_docName)
@@ -304,7 +308,7 @@ class BAFrame(wx.Frame):
     def OnFileSaveAs(self, event):
         mydlg = wx.FileDialog(self, "Save Bookmaction project", wildcard="BMKA files (*.bmka)|*.bmka",
                               style=wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT)
-        if (mydlg.ShowModal() == wx.ID_CANCEL):
+        if mydlg.ShowModal() == wx.ID_CANCEL:
             return
 
         self.__SaveFile(mydlg.GetPath())
@@ -313,8 +317,8 @@ class BAFrame(wx.Frame):
         self.m_bookmarkDocument.SaveObject(filename)
 
     def OnFileNew(self, event):
-        if (self.m_bookmarkDocument.m_isModified == True):
-            if (self.__ProjectQuestion("creating new project") == False):
+        if self.m_bookmarkDocument.m_isModified is True:
+            if self.__ProjectQuestion("creating new project") is False:
                 return
         self.m_bookmarkDocument.ClearDocument()
         self.m_bookmarkDocument.SetBookMarksToList(self.m_listCtrl)
@@ -322,7 +326,7 @@ class BAFrame(wx.Frame):
     def OnFileOpen(self, event):
         mydlg = wx.FileDialog(self, "Open Bookmaction project", wildcard="BMKA files (*.bmka)|*.bmka",
                               style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST)
-        if (mydlg.ShowModal() == wx.ID_CANCEL):
+        if mydlg.ShowModal() == wx.ID_CANCEL:
             return
 
         self.__OpenFile(mydlg.GetPath())
@@ -332,15 +336,15 @@ class BAFrame(wx.Frame):
         self.__OpenFile(self.m_fileHistoryMenu.GetHistoryFile(my_menu_id))
 
     def __OpenFile(self, filename):
-        if (filename == ""):
+        if filename == "":
             return False
 
-        if (os.path.exists(filename) == False):
+        if os.path.exists(filename) is False:
             wx.LogError("The file : {} didn't exists".format(filename))
             self.__RemoveFileFromHistory(filename)
             return False
 
-        if (self.m_bookmarkDocument.LoadObject(filename) == True):
+        if self.m_bookmarkDocument.LoadObject(filename) is True:
             self.m_fileHistoryMenu.AddFileToHistory(filename)
         else:
             self.__RemoveFileFromHistory(filename)
@@ -350,7 +354,7 @@ class BAFrame(wx.Frame):
     def __RemoveFileFromHistory(self, filename):
         for index in range(self.m_fileHistoryMenu.GetCount()):
             my_file = self.m_fileHistoryMenu.GetHistoryFile(index)
-            if (filename == my_file):
+            if filename == my_file:
                 self.m_fileHistoryMenu.RemoveFileFromHistory(index)
                 return
 
@@ -358,12 +362,12 @@ class BAFrame(wx.Frame):
         # set document name
         mydocname = self.m_bookmarkDocument.m_docName
         mytitletext = ""
-        if (mydocname == ""):
+        if mydocname == "":
             mytitletext = self.m_title + " - " + "untitled"
         else:
             mytitletext = self.m_title + " - " + mydocname
 
-        if (self.m_bookmarkDocument.m_isModified == True):
+        if self.m_bookmarkDocument.m_isModified is True:
             mytitletext = mytitletext + "*"
 
         self.SetTitle(mytitletext)
@@ -374,8 +378,8 @@ class BAFrame(wx.Frame):
         self.GetStatusBar().SetStatusText(my_text, 0)
 
     def OnClose(self, event):
-        if (event.CanVeto() and self.m_bookmarkDocument.m_isModified == True):
-            if (self.__ProjectQuestion("closing") == False):
+        if event.CanVeto() and self.m_bookmarkDocument.m_isModified is True:
+            if self.__ProjectQuestion("closing") is False:
                 event.Veto()
                 return
         self.m_fileHistoryMenu.Save(self.m_config)
@@ -383,37 +387,18 @@ class BAFrame(wx.Frame):
 
     def __ProjectQuestion(self, text):
         myprojname = self.m_bookmarkDocument.m_docName
-        if (myprojname == ""):
-            myprojname == "untitled"
+        if myprojname == "":
+            myprojname = "untitled"
 
         myanswer = wx.MessageBox("Project {} was modified, Save modification before {}".format(myprojname, text),
                                  "Project modified",
                                  wx.ICON_EXCLAMATION | wx.YES_NO | wx.CANCEL, self)
-        if (myanswer == wx.YES):
+        if myanswer == wx.YES:
             self.OnFileSave(wx.CommandEvent())
             return True
-        elif (myanswer == wx.NO):
+        elif myanswer == wx.NO:
             return True
         return False
 
 
-##########################################################
-#  MAIN APP CLASS
-##########################################################
 
-
-class BAApp(wx.App):
-    """
-    Main application class
-    initialize the BAFrame class and the main loop
-    """
-
-    def OnInit(self):
-        dlg = BAFrame()
-        dlg.Show(True)
-        self.SetTopWindow(dlg)
-        return True
-
-
-app = BAApp()
-app.MainLoop()

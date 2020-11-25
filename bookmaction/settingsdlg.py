@@ -2,7 +2,7 @@ import wx
 
 
 ###########################################################################
-## Class SettingsDlg
+# Class SettingsDlg
 ###########################################################################
 
 class SettingsDlg(wx.Dialog):
@@ -54,7 +54,7 @@ class SettingsDlg(wx.Dialog):
         m_sdbSizer2.AddButton(self.m_sdbSizer2OK)
         self.m_sdbSizer2Cancel = wx.Button(self, wx.ID_CANCEL)
         m_sdbSizer2.AddButton(self.m_sdbSizer2Cancel)
-        m_sdbSizer2.Realize();
+        m_sdbSizer2.Realize()
 
         bSizer4.Add(m_sdbSizer2, 0, wx.EXPAND | wx.ALL, 5)
 
@@ -84,7 +84,7 @@ class SettingsDlg(wx.Dialog):
     def __SetDialogAppearance(self):
         # self.m_config = wx.FileConfig("bookmaction")
         myAppearance = self.m_config_object.ReadInt("Appearance", 0)
-        if (myAppearance == 0):  # light mode
+        if myAppearance == 0:  # light mode
             pass  # do nothing for da
             # self.SetBackgroundColour(wx.Colour(236,236,236))
             # self.SetForegroundColour(wx.BLACK)
