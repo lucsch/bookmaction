@@ -3,3 +3,4 @@ venv
 *.pyc
 version.py
 bin
+.vscode
